@@ -8,17 +8,22 @@ University of Illinois Urbana-Champaign, Sony AI, and Sony Group Corporation
 [[Paper (being prepared)]](https://hkchengrex.github.io/MMAudio) [[Project Page]](https://hkchengrex.github.io/MMAudio)
 
 
-**Note: This repository is still under construction. Single example inference should work as expected. Training code will be added. Code is subject to non-backward-compatible changes.**
+**Note: This repository is still under construction. Single-example inference should work as expected. The training code will be added. Code is subject to non-backward-compatible changes.**
 
 ## Highlight
 
 MMAudio generates synchronized audio given video and/or text inputs.
 Our key innovation is multimodal joint training which allows training on a wide range of audio-visual and audio-text datasets.
-Moreover, a synchronization module is used to align the generated audio with the video frames.
+Moreover, a synchronization module aligns the generated audio with the video frames.
 
 
 ## Results
 
+(Videos from MovieGen/Hungyuan Video/VGGSound; Audio from our algorithm)
+
+https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
+
+For more results, go to https://hkchengrex.com/MMAudio/video_main.html.
 
 ## Installation
 
