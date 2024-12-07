@@ -22,6 +22,7 @@ device = 'cuda'
 dtype = torch.bfloat16
 
 model: ModelConfig = all_model_cfg['large_44k']
+model.download_if_needed()
 output_dir = Path('./output/gradio')
 
 setup_eval_logging()

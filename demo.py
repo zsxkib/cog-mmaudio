@@ -45,6 +45,7 @@ def main():
     if args.variant not in all_model_cfg:
         raise ValueError(f'Unknown model variant: {args.variant}')
     model: ModelConfig = all_model_cfg[args.variant]
+    model.download_if_needed()
     seq_cfg = model.seq_cfg
 
     if args.video:

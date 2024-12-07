@@ -12,6 +12,7 @@ from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio
 from mmaudio.model.sequence_config import (CONFIG_16K, CONFIG_44K, SequenceConfig)
 from mmaudio.model.utils.features_utils import FeaturesUtils
+from mmaudio.utils.download_utils import download_model_if_needed
 
 log = logging.getLogger()
 
@@ -31,6 +32,13 @@ class ModelConfig:
             return CONFIG_16K
         elif self.mode == '44k':
             return CONFIG_44K
+
+    def download_if_needed(self):
+        download_model_if_needed(self.model_path)
+        download_model_if_needed(self.vae_path)
+        if self.bigvgan_16k_path is not None:
+            download_model_if_needed(self.bigvgan_16k_path)
+        download_model_if_needed(self.synchformer_ckpt)
 
 
 small_16k = ModelConfig(model_name='small_16k',
