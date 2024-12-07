@@ -89,13 +89,24 @@ python demo.py --duration=8 --video=<path to video> --prompt "your prompt"
 ```
 See the file for more options.
 Simply omit the `--video` option for text-to-audio synthesis.
+The default output (and training) duration is 8 seconds. Longer/shorter durations could also work, but a large deviation from the training duration may result in lower quality.
 
 
 ### Gradio interface
 
+Supports video-to-audio and text-to-audio synthesis.
+
 ```
 python gradio_demo.py
 ```
+
+### Known limitations
+
+1. The model sometimes generates undesired unintelligible human speech-like sounds
+2. The model sometimes generates undesired background music
+3. The model struggles with unfamiliar concepts, e.g., it can generate "gunfires" but not "RPG firing".
+
+We believe all of these three limitations can be addressed with more high-quality training data.
 
 ## Training
 Work in progress.
