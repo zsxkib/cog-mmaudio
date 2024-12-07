@@ -19,7 +19,7 @@ Moreover, a synchronization module aligns the generated audio with the video fra
 
 ## Results
 
-(Videos from MovieGen/Hungyuan Video/VGGSound; Audio from our algorithm)
+(Videos from MovieGen/Hungyuan Video/VGGSound; audio from our algorithm)
 
 https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
 
