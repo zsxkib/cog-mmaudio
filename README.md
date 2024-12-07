@@ -54,18 +54,18 @@ pip install -e .
 
 **Pretrained models:**
 
-The models will be downloaded automatically when you run the demo script.
+The models will be downloaded automatically when you run the demo script. MD5 checksums are provided in `mmaudio/utils/download_utils.py`
 
-| Model    | Download link | File size | MD5 checksum |
-| -------- | ------- | ------- | ------- |
-| Flow prediction network, small 16kHz | <a href="https://databank.illinois.edu/datafiles/k6jve/download" download="mmaudio_small_16k.pth">mmaudio_small_16k.pth</a> | 601M | af93cde404179f58e3919ac085b8033b |
-| Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_16k.pth">mmaudio_small_44k.pth</a> | 601M | babd74c884783d13701ea2820a5f5b6d |
-| Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_small_16k.pth">mmaudio_medium_44k.pth</a> | 2.4G | 5a56b6665e45a1e65ada534defa903d0 |
-| Flow prediction network, large 44.1kHz (recommended) | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_small_16k.pth">mmaudio_large_44k.pth</a> | 3.9G | fed96c325a6785b85ce75ae1aafd2673 |
-| 16kHz VAE | <a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-16.pth">v1-16.pth</a> | 655M | 69f56803f59a549a1a507c93859fd4d7 |
-| 16kHz BigVGAN vocoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/best_netG.pt">best_netG.pt</a> | 429M | eeaf372a38a9c31c362120aba2dde292 |
-| 44.1kHz VAE |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-44.pth">v1-44.pth</a> | 1.2G | fab020275fa44c6589820ce025191600 |
-| Synchformer visual encoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/synchformer_state_dict.pth">synchformer_state_dict.pth</a> | 907M | 5b2f5594b0730f70e41e549b7c94390c |
+| Model    | Download link | File size |
+| -------- | ------- | ------- |
+| Flow prediction network, small 16kHz | <a href="https://databank.illinois.edu/datafiles/k6jve/download" download="mmaudio_small_16k.pth">mmaudio_small_16k.pth</a> | 601M |
+| Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_16k.pth">mmaudio_small_44k.pth</a> | 601M |
+| Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_small_16k.pth">mmaudio_medium_44k.pth</a> | 2.4G |
+| Flow prediction network, large 44.1kHz **(recommended)** | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_small_16k.pth">mmaudio_large_44k.pth</a> | 3.9G |
+| 16kHz VAE | <a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-16.pth">v1-16.pth</a> | 655M |
+| 16kHz BigVGAN vocoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/best_netG.pt">best_netG.pt</a> | 429M |
+| 44.1kHz VAE |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-44.pth">v1-44.pth</a> | 1.2G | 
+| Synchformer visual encoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/synchformer_state_dict.pth">synchformer_state_dict.pth</a> | 907M |
 
 The 44.1kHz vocoder will be downloaded automatically.
 
@@ -100,8 +100,8 @@ MMAudio
 
 ## Demo
 
-By default, these scripts uses the `large_44k` model. 
-In our experiments, it only uses around 6GB of GPU memory (in 16-bit mode) which should fit in most modern GPUs.
+By default, these scripts use the `large_44k` model. 
+In our experiments, inference only takes around 6GB of GPU memory (in 16-bit mode) which should fit in most modern GPUs.
 
 ### Command-line interface
 
@@ -111,7 +111,7 @@ python demo.py --duration=8 --video=<path to video> --prompt "your prompt"
 ```
 See the file for more options.
 Simply omit the `--video` option for text-to-audio synthesis.
-The default output (and training) duration is 8 seconds. Longer/shorter durations could also work, but a large deviation from the training duration may result in lower quality.
+The default output (and training) duration is 8 seconds. Longer/shorter durations could also work, but a large deviation from the training duration may result in a lower quality.
 
 
 ### Gradio interface
@@ -131,4 +131,7 @@ python gradio_demo.py
 We believe all of these three limitations can be addressed with more high-quality training data.
 
 ## Training
+Work in progress.
+
+## Evaluation
 Work in progress.
