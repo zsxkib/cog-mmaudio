@@ -23,7 +23,7 @@ Moreover, a synchronization module aligns the generated audio with the video fra
 
 https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
 
-For more results, go to https://hkchengrex.com/MMAudio/video_main.html.
+For more results, visit https://hkchengrex.com/MMAudio/video_main.html.
 
 ## Installation
 
