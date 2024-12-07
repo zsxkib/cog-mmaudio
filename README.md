@@ -19,7 +19,7 @@ Moreover, a synchronization module aligns the generated audio with the video fra
 
 ## Results
 
-(Videos from MovieGen/Hungyuan Video/VGGSound; audio from our algorithm)
+(Videos from MovieGen/Hunyuan Video/VGGSound; audio from our algorithm)
 
 https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
 
@@ -59,9 +59,9 @@ The models will be downloaded automatically when you run the demo script. MD5 ch
 | Model    | Download link | File size |
 | -------- | ------- | ------- |
 | Flow prediction network, small 16kHz | <a href="https://databank.illinois.edu/datafiles/k6jve/download" download="mmaudio_small_16k.pth">mmaudio_small_16k.pth</a> | 601M |
-| Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_16k.pth">mmaudio_small_44k.pth</a> | 601M |
-| Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_small_16k.pth">mmaudio_medium_44k.pth</a> | 2.4G |
-| Flow prediction network, large 44.1kHz **(recommended)** | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_small_16k.pth">mmaudio_large_44k.pth</a> | 3.9G |
+| Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_44k.pth">mmaudio_small_44k.pth</a> | 601M |
+| Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_medium_44k.pth">mmaudio_medium_44k.pth</a> | 2.4G |
+| Flow prediction network, large 44.1kHz **(recommended)** | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_large_44k.pth">mmaudio_large_44k.pth</a> | 3.9G |
 | 16kHz VAE | <a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-16.pth">v1-16.pth</a> | 655M |
 | 16kHz BigVGAN vocoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/best_netG.pt">best_netG.pt</a> | 429M |
 | 44.1kHz VAE |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-44.pth">v1-44.pth</a> | 1.2G | 
@@ -69,7 +69,7 @@ The models will be downloaded automatically when you run the demo script. MD5 ch
 
 The 44.1kHz vocoder will be downloaded automatically.
 
-Expected directory structure (full):
+The expected directory structure (full):
 
 ```bash
 MMAudio
@@ -86,7 +86,7 @@ MMAudio
 └── ...
 ```
 
-Expected directory structure (minimal, for the recommended model only):
+The expected directory structure (minimal, for the recommended model only):
 
 ```bash
 MMAudio
