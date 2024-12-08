@@ -226,14 +226,14 @@ def make_video(video_path: Path, output_path: Path, audio: torch.Tensor, samplin
     writer.add_audio_stream(
         sample_rate=sampling_rate,
         num_channels=audio.shape[0],
-        encoder="libmp3lame",
+        encoder='aac',  # 'flac' does not work for some reason?
     )
     writer.add_video_stream(frame_rate=fps,
                             width=w,
                             height=h,
-                            format="rgb24",
-                            encoder="libx264",
-                            encoder_format="yuv420p")
+                            format='rgb24',
+                            encoder='libx264',
+                            encoder_format='yuv420p')
     with writer.open():
         writer.write_audio_chunk(0, audio.float().transpose(0, 1))
         writer.write_video_chunk(1, video_chunk)

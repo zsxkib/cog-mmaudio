@@ -109,6 +109,7 @@ With `demo.py`
 ```bash
 python demo.py --duration=8 --video=<path to video> --prompt "your prompt" 
 ```
+The output (audio in `.flac` format, and video in `.mp4` format) will be saved in `./output`.
 See the file for more options.
 Simply omit the `--video` option for text-to-audio synthesis.
 The default output (and training) duration is 8 seconds. Longer/shorter durations could also work, but a large deviation from the training duration may result in a lower quality.
