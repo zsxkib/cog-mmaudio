@@ -136,3 +136,10 @@ Work in progress.
 
 ## Evaluation
 Work in progress.
+
+## Acknowledgement
+Many thanks to:
+- [Make-An-Audio 2](https://github.com/bytedance/Make-An-Audio-2) for the 16kHz BigVGAN pretrained model
+- [BigVGAN](https://github.com/NVIDIA/BigVGAN)
+- [Synchformer](https://github.com/v-iashin/Synchformer) 
+
