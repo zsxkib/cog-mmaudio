@@ -16,7 +16,7 @@
 
     <link rel="icon" type="image/png" href="images/icon.png">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -37,34 +37,32 @@
                 $("#content").load("video_gen.html #mochi_ltx_all");
             });
             $("#load_vgg1").click(function(){
-                $("#content").load("video_vgg1.html #vgg1");
+                $("#content").load("video_vgg.html #vgg1");
             });
             $("#load_vgg2").click(function(){
-                $("#content").load("video_vgg1.html #vgg2");
+                $("#content").load("video_vgg.html #vgg2");
             });
             $("#load_vgg3").click(function(){
-                $("#content").load("video_vgg1.html #vgg3");
+                $("#content").load("video_vgg.html #vgg3");
             });
             $("#load_vgg4").click(function(){
-                $("#content").load("video_vgg2.html #vgg4");
+                $("#content").load("video_vgg.html #vgg4");
             });
             $("#load_vgg5").click(function(){
-                $("#content").load("video_vgg2.html #vgg5");
+                $("#content").load("video_vgg.html #vgg5");
             });
             $("#load_vgg6").click(function(){
-                $("#content").load("video_vgg2.html #vgg6");
+                $("#content").load("video_vgg.html #vgg6");
             });
             $("#load_vgg_extra").click(function(){
-                $("#content").load("video_vgg2.html #vgg_extra");
+                $("#content").load("video_vgg.html #vgg_extra");
             });
         });
     </script>
 </head>
 <body>
     <h1 id="index" style="text-align: center;">Index</h1>
-    <p><span style="float:right;"><a href="index.html">Back to project page</a></span></p>
-
-    <b>(Click on the links to load the corresponding videos)</b>
+    <p><b>(Click on the links to load the corresponding videos)</b> <span style="float:right;"><a href="index.html">Back to project page</a></span></p>
 
     <ol>
         <li>
@@ -90,7 +88,7 @@
         </li>
     </ol>
 
-    <div id="content">
+    <div id="content" class="container-fluid">
 
     </div>
     <br>
