@@ -1,7 +1,7 @@
 <div align="center">
 <p align="center">
-  <h2>MMAudio</h1>
-  <a href="">Paper (Soon)</a> | <a href="https://hkchengrex.github.io/MMAudio">Webpage</a> | <a href="https://huggingface.co/hkchengrex/MMAudio/tree/main">Models</a> | <a href="https://huggingface.co/spaces/hkchengrex/MMAudio">Demo</a>
+  <h2>MMAudio</h2>
+  <a href="">Paper (Soon)</a> | <a href="https://hkchengrex.github.io/MMAudio">Webpage</a> | <a href="https://huggingface.co/hkchengrex/MMAudio/tree/main">Models</a> | <a href="https://huggingface.co/spaces/hkchengrex/MMAudio"> Huggingface Demo</a> | <a href="https://colab.research.google.com/drive/1TAaXCY2-kPk4xE4PwKB3EqFbSnkUuzZ8?usp=sharing"> Colab Demo</a>
 </p>
 </div>
 
@@ -19,17 +19,15 @@ MMAudio generates synchronized audio given video and/or text inputs.
 Our key innovation is multimodal joint training which allows training on a wide range of audio-visual and audio-text datasets.
 Moreover, a synchronization module aligns the generated audio with the video frames.
 
-
 ## Results
 
 (All audio from our algorithm MMAudio)
 
-Videos from Sora: 
+Videos from Sora:
 
 https://github.com/user-attachments/assets/82afd192-0cee-48a1-86ca-bd39b8c8f330
 
-
-Videos from MovieGen/Hunyuan Video/VGGSound: 
+Videos from MovieGen/Hunyuan Video/VGGSound:
 
 https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
 
