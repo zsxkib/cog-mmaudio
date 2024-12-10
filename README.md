@@ -19,7 +19,7 @@ Moreover, a synchronization module aligns the generated audio with the video fra
 
 ## Results
 
-(All audio from MMAudio)
+(All audio from our algorithm MMAudio)
 
 Videos from Sora: 
 
