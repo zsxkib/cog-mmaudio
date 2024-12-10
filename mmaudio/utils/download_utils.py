@@ -30,7 +30,7 @@ links = [
     },
     {
         'name': 'mmaudio_large_44k_v2.pth',
-        'url': 'https://databank.illinois.edu/datafiles/16j46/download',
+        'url': 'https://huggingface.co/hkchengrex/MMAudio/resolve/main/weights/mmaudio_large_44k_v2.pth',
         'md5': '01ad4464f049b2d7efdaa4c1a59b8dfe'
     },
     {

@@ -69,7 +69,8 @@ The models will be downloaded automatically when you run the demo script. MD5 ch
 | Flow prediction network, small 16kHz | <a href="https://databank.illinois.edu/datafiles/k6jve/download" download="mmaudio_small_16k.pth">mmaudio_small_16k.pth</a> | 601M |
 | Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_44k.pth">mmaudio_small_44k.pth</a> | 601M |
 | Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_medium_44k.pth">mmaudio_medium_44k.pth</a> | 2.4G |
-| Flow prediction network, large 44.1kHz **(recommended)** | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_large_44k.pth">mmaudio_large_44k.pth</a> | 3.9G |
+| Flow prediction network, large 44.1kHz | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_large_44k.pth">mmaudio_large_44k.pth</a> | 3.9G |
+| Flow prediction network, large 44.1kHz, v2 **(recommended)** | <a href="https://huggingface.co/hkchengrex/MMAudio/resolve/main/weights/mmaudio_large_44k_v2.pth" download="mmaudio_large_44k_v2.pth">mmaudio_large_44k_v2.pth</a> | 3.9G |
 | 16kHz VAE | <a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-16.pth">v1-16.pth</a> | 655M |
 | 16kHz BigVGAN vocoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/best_netG.pt">best_netG.pt</a> | 429M |
 | 44.1kHz VAE |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-44.pth">v1-44.pth</a> | 1.2G | 
@@ -90,7 +91,8 @@ MMAudio
 │   ├── mmaudio_small_16k.pth
 │   ├── mmaudio_small_44k.pth
 │   ├── mmaudio_medium_44k.pth
-│   └── mmaudio_large_44k.pth
+│   ├── mmaudio_large_44k.pth
+│   └── mmaudio_large_44k_v2.pth
 └── ...
 ```
 
@@ -102,7 +104,7 @@ MMAudio
 │   ├── synchformer_state_dict.pth
 │   └── v1-44.pth
 ├── weights
-│   └── mmaudio_large_44k.pth
+│   └── mmaudio_large_44k_v2.pth
 └── ...
 ```
 
