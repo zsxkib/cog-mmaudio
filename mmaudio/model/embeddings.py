@@ -1,13 +1,7 @@
-import math
-
 import torch
 import torch.nn as nn
 
 # https://github.com/facebookresearch/DiT
-
-
-def modulate(x: torch.Tensor, shift: torch.Tensor, scale: torch.Tensor) -> torch.Tensor:
-    return x * (1 + scale.unsqueeze(1)) + shift.unsqueeze(1)
 
 
 class TimestepEmbedder(nn.Module):
@@ -15,17 +9,26 @@ class TimestepEmbedder(nn.Module):
     Embeds scalar timesteps into vector representations.
     """
 
-    def __init__(self, hidden_size, frequency_embedding_size=256):
+    def __init__(self, dim, frequency_embedding_size, max_period):
         super().__init__()
         self.mlp = nn.Sequential(
-            nn.Linear(frequency_embedding_size, hidden_size, bias=True),
+            nn.Linear(frequency_embedding_size, dim),
             nn.SiLU(),
-            nn.Linear(hidden_size, hidden_size, bias=True),
+            nn.Linear(dim, dim),
         )
-        self.frequency_embedding_size = frequency_embedding_size
+        self.dim = dim
+        self.max_period = max_period
+        assert dim % 2 == 0, 'dim must be even.'
 
-    @staticmethod
-    def timestep_embedding(t, dim, max_period=10000):
+        with torch.autocast('cuda', enabled=False):
+            self.freqs = nn.Buffer(
+                1.0 / (10000**(torch.arange(0, frequency_embedding_size, 2, dtype=torch.float32) /
+                               frequency_embedding_size)),
+                persistent=False)
+            freq_scale = 10000 / max_period
+            self.freqs = freq_scale * self.freqs
+
+    def timestep_embedding(self, t):
         """
         Create sinusoidal timestep embeddings.
         :param t: a 1-D Tensor of N indices, one per batch element.
@@ -35,17 +38,12 @@ class TimestepEmbedder(nn.Module):
         :return: an (N, D) Tensor of positional embeddings.
         """
         # https://github.com/openai/glide-text2im/blob/main/glide_text2im/nn.py
-        half = dim // 2
-        freqs = torch.exp(-math.log(max_period) *
-                          torch.arange(start=0, end=half, dtype=torch.float32) /
-                          half).to(device=t.device)
-        args = t[:, None].float() * freqs[None]
+
+        args = t[:, None].float() * self.freqs[None]
         embedding = torch.cat([torch.cos(args), torch.sin(args)], dim=-1)
-        if dim % 2:
-            embedding = torch.cat([embedding, torch.zeros_like(embedding[:, :1])], dim=-1)
         return embedding
 
     def forward(self, t):
-        t_freq = self.timestep_embedding(t, self.frequency_embedding_size)
-        t_emb = self.mlp(t_freq.to(dtype=t.dtype))
+        t_freq = self.timestep_embedding(t).to(t.dtype)
+        t_emb = self.mlp(t_freq)
         return t_emb

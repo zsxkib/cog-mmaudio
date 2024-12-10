@@ -43,9 +43,11 @@ class MMAudio(nn.Module):
                  text_seq_len: int = 77,
                  latent_mean: Optional[torch.Tensor] = None,
                  latent_std: Optional[torch.Tensor] = None,
-                 empty_string_feat: Optional[torch.Tensor] = None) -> None:
+                 empty_string_feat: Optional[torch.Tensor] = None,
+                 v2: bool = False) -> None:
         super().__init__()
 
+        self.v2 = v2
         self.latent_dim = latent_dim
         self._latent_seq_len = latent_seq_len
         self._clip_seq_len = clip_seq_len
@@ -54,27 +56,52 @@ class MMAudio(nn.Module):
         self.hidden_dim = hidden_dim
         self.num_heads = num_heads
 
-        self.audio_input_proj = nn.Sequential(
-            ChannelLastConv1d(latent_dim, hidden_dim, kernel_size=7, padding=3),
-            nn.SELU(),
-            ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=7, padding=3),
-        )
+        if v2:
+            self.audio_input_proj = nn.Sequential(
+                ChannelLastConv1d(latent_dim, hidden_dim, kernel_size=7, padding=3),
+                nn.SiLU(),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=7, padding=3),
+            )
 
-        self.clip_input_proj = nn.Sequential(
-            nn.Linear(clip_dim, hidden_dim),
-            ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
-        )
+            self.clip_input_proj = nn.Sequential(
+                nn.Linear(clip_dim, hidden_dim),
+                nn.SiLU(),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
+            )
 
-        self.sync_input_proj = nn.Sequential(
-            ChannelLastConv1d(sync_dim, hidden_dim, kernel_size=7, padding=3),
-            nn.SELU(),
-            ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
-        )
+            self.sync_input_proj = nn.Sequential(
+                ChannelLastConv1d(sync_dim, hidden_dim, kernel_size=7, padding=3),
+                nn.SiLU(),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
+            )
 
-        self.text_input_proj = nn.Sequential(
-            nn.Linear(text_dim, hidden_dim),
-            MLP(hidden_dim, hidden_dim * 4),
-        )
+            self.text_input_proj = nn.Sequential(
+                nn.Linear(text_dim, hidden_dim),
+                nn.SiLU(),
+                MLP(hidden_dim, hidden_dim * 4),
+            )
+        else:
+            self.audio_input_proj = nn.Sequential(
+                ChannelLastConv1d(latent_dim, hidden_dim, kernel_size=7, padding=3),
+                nn.SELU(),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=7, padding=3),
+            )
+
+            self.clip_input_proj = nn.Sequential(
+                nn.Linear(clip_dim, hidden_dim),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
+            )
+
+            self.sync_input_proj = nn.Sequential(
+                ChannelLastConv1d(sync_dim, hidden_dim, kernel_size=7, padding=3),
+                nn.SELU(),
+                ConvMLP(hidden_dim, hidden_dim * 4, kernel_size=3, padding=1),
+            )
+
+            self.text_input_proj = nn.Sequential(
+                nn.Linear(text_dim, hidden_dim),
+                MLP(hidden_dim, hidden_dim * 4),
+            )
 
         self.clip_cond_proj = nn.Linear(hidden_dim, hidden_dim)
         self.text_cond_proj = nn.Linear(hidden_dim, hidden_dim)
@@ -84,7 +111,14 @@ class MMAudio(nn.Module):
 
         self.final_layer = FinalBlock(hidden_dim, latent_dim)
 
-        self.t_embed = TimestepEmbedder(hidden_dim)
+        if v2:
+            self.t_embed = TimestepEmbedder(hidden_dim,
+                                            frequency_embedding_size=hidden_dim,
+                                            max_period=1)
+        else:
+            self.t_embed = TimestepEmbedder(hidden_dim,
+                                            frequency_embedding_size=256,
+                                            max_period=10000)
         self.joint_blocks = nn.ModuleList([
             JointBlock(hidden_dim,
                        num_heads,
@@ -131,9 +165,9 @@ class MMAudio(nn.Module):
                                           freq_scaling=base_freq * self._latent_seq_len /
                                           self._clip_seq_len,
                                           device=self.device)
-        # TODO: set persistent to False
-        self.latent_rot = nn.Buffer(latent_rot)
-        self.clip_rot = nn.Buffer(clip_rot)
+
+        self.latent_rot = nn.Buffer(latent_rot, persistent=False)
+        self.clip_rot = nn.Buffer(clip_rot, persistent=False)
 
     def update_seq_lengths(self, latent_seq_len: int, clip_seq_len: int, sync_seq_len: int) -> None:
         self._latent_seq_len = latent_seq_len
@@ -305,6 +339,13 @@ class MMAudio(nn.Module):
                     (1 - cfg_strength) * self.predict_flow(latent, t, empty_conditions))
 
     def load_weights(self, src_dict) -> None:
+        if 't_embed.freqs' in src_dict:
+            del src_dict['t_embed.freqs']
+        if 'latent_rot' in src_dict:
+            del src_dict['latent_rot']
+        if 'clip_rot' in src_dict:
+            del src_dict['clip_rot']
+
         self.load_state_dict(src_dict, strict=True)
 
     @property
@@ -388,6 +429,23 @@ def large_44k(**kwargs) -> MMAudio:
                    **kwargs)
 
 
+def large_44k_v2(**kwargs) -> MMAudio:
+    num_heads = 14
+    return MMAudio(latent_dim=40,
+                   clip_dim=1024,
+                   sync_dim=768,
+                   text_dim=1024,
+                   hidden_dim=64 * num_heads,
+                   depth=21,
+                   fused_depth=14,
+                   num_heads=num_heads,
+                   latent_seq_len=345,
+                   clip_seq_len=64,
+                   sync_seq_len=192,
+                   v2=True,
+                   **kwargs)
+
+
 def get_my_mmaudio(name: str, **kwargs) -> MMAudio:
     if name == 'small_16k':
         return small_16k(**kwargs)
@@ -397,6 +455,8 @@ def get_my_mmaudio(name: str, **kwargs) -> MMAudio:
         return medium_44k(**kwargs)
     if name == 'large_44k':
         return large_44k(**kwargs)
+    if name == 'large_44k_v2':
+        return large_44k_v2(**kwargs)
 
     raise ValueError(f'Unknown model name: {name}')
 

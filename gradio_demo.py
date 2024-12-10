@@ -21,7 +21,7 @@ log = logging.getLogger()
 device = 'cuda'
 dtype = torch.bfloat16
 
-model: ModelConfig = all_model_cfg['large_44k']
+model: ModelConfig = all_model_cfg['large_44k_v2']
 model.download_if_needed()
 output_dir = Path('./output/gradio')
 
@@ -117,7 +117,7 @@ video_to_audio_tab = gr.Interface(
     inputs=[
         gr.Video(),
         gr.Text(label='Prompt'),
-        gr.Text(label='Negative prompt'),
+        gr.Text(label='Negative prompt', value='music'),
         gr.Number(label='Seed', value=0, precision=0, minimum=0),
         gr.Number(label='Num steps', value=25, precision=0, minimum=1),
         gr.Number(label='Guidance Strength', value=4.5, minimum=1),

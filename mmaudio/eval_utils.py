@@ -61,11 +61,17 @@ large_44k = ModelConfig(model_name='large_44k',
                         vae_path=Path('./ext_weights/v1-44.pth'),
                         bigvgan_16k_path=None,
                         mode='44k')
+large_44k_v2 = ModelConfig(model_name='large_44k_v2',
+                           model_path=Path('./weights/mmaudio_large_44k_v2.pth'),
+                           vae_path=Path('./ext_weights/v1-44.pth'),
+                           bigvgan_16k_path=None,
+                           mode='44k')
 all_model_cfg: dict[str, ModelConfig] = {
     'small_16k': small_16k,
     'small_44k': small_44k,
     'medium_44k': medium_44k,
     'large_44k': large_44k,
+    'large_44k_v2': large_44k_v2,
 }
 
 

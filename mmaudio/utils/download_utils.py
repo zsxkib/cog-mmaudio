@@ -1,9 +1,9 @@
-from pathlib import Path
-from tqdm import tqdm
 import hashlib
-import requests
-
 import logging
+from pathlib import Path
+
+import requests
+from tqdm import tqdm
 
 log = logging.getLogger()
 
@@ -27,6 +27,11 @@ links = [
         'name': 'mmaudio_large_44k.pth',
         'url': 'https://databank.illinois.edu/datafiles/4jx76/download',
         'md5': 'fed96c325a6785b85ce75ae1aafd2673'
+    },
+    {
+        'name': 'mmaudio_large_44k_v2.pth',
+        'url': 'https://databank.illinois.edu/datafiles/16j46/download',
+        'md5': '01ad4464f049b2d7efdaa4c1a59b8dfe'
     },
     {
         'name': 'v1-16.pth',

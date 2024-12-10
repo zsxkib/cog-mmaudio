@@ -5,8 +5,8 @@ from pathlib import Path
 import torch
 import torchaudio
 
-from mmaudio.eval_utils import (ModelConfig, all_model_cfg, generate, load_video, make_video,
-                                setup_eval_logging)
+from mmaudio.eval_utils import (ModelConfig, all_model_cfg, generate,
+                                load_video, make_video, setup_eval_logging)
 from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio, get_my_mmaudio
 from mmaudio.model.utils.features_utils import FeaturesUtils
@@ -24,8 +24,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('--variant',
                         type=str,
-                        default='large_44k',
-                        help='small_16k, small_44k, medium_44k, large_44k')
+                        default='large_44k_v2',
+                        help='small_16k, small_44k, medium_44k, large_44k, large_44k_v2')
     parser.add_argument('--video', type=Path, help='Path to the video file')
     parser.add_argument('--prompt', type=str, help='Input prompt', default='')
     parser.add_argument('--negative_prompt', type=str, help='Negative prompt', default='')
