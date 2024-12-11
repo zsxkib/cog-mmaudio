@@ -51,7 +51,7 @@ We recommend using a [miniforge](https://github.com/conda-forge/miniforge) envir
 git clone https://github.com/hkchengrex/MMAudio.git
 ```
 
-**Install with pip:**
+**Install with pip (install pytorch first before attempting this!):**
 
 ```bash
 cd MMAudio
@@ -59,6 +59,7 @@ pip install -e .
 ```
 
 (If you encounter the File "setup.py" not found error, upgrade your pip with pip install --upgrade pip)
+
 
 **Pretrained models:**
 
