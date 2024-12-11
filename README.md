@@ -127,7 +127,7 @@ The default output (and training) duration is 8 seconds. Longer/shorter duration
 
 ### Gradio interface
 
-Supports video-to-audio and text-to-audio synthesis.
+Supports video-to-audio and text-to-audio synthesis. Use [port forwarding](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot) if necessary. Our default port is `17888` which you can change in `gradio_demo.py`.
 
 ```
 python gradio_demo.py
