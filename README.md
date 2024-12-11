@@ -41,7 +41,7 @@ We have only tested this on Ubuntu.
 
 We recommend using a [miniforge](https://github.com/conda-forge/miniforge) environment.
 
-- Python 3.8+
+- Python 3.9+
 - PyTorch **2.5.1+** and corresponding torchvision/torchaudio (pick your CUDA version https://pytorch.org/, pip install recommended)
 - ffmpeg<7 ([this is required by torchaudio](https://pytorch.org/audio/master/installation.html#optional-dependencies), you can install it in a miniforge environment with `conda install -c conda-forge 'ffmpeg<7'`)
 
