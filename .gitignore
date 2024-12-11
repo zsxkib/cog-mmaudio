@@ -12,6 +12,7 @@ workspace/
 ext_weights/
 ext_weights
 .checkpoints/
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

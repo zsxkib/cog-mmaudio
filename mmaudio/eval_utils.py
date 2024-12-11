@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+import av
 import torch
 from colorlog import ColoredFormatter
 from torchvision.transforms import v2
@@ -169,11 +170,13 @@ def load_video(video_path: Path, duration_sec: float) -> tuple[torch.Tensor, tor
     reader = StreamingMediaDecoder(video_path)
     reader.add_basic_video_stream(
         frames_per_chunk=int(_CLIP_FPS * duration_sec),
+        buffer_chunk_size=-1,
         frame_rate=_CLIP_FPS,
         format='rgb24',
     )
     reader.add_basic_video_stream(
         frames_per_chunk=int(_SYNC_FPS * duration_sec),
+        buffer_chunk_size=-1,
         frame_rate=_SYNC_FPS,
         format='rgb24',
     )
@@ -210,23 +213,22 @@ def load_video(video_path: Path, duration_sec: float) -> tuple[torch.Tensor, tor
 def make_video(video_path: Path, output_path: Path, audio: torch.Tensor, sampling_rate: int,
                duration_sec: float):
 
-    approx_max_length = int(duration_sec * 60)
+    av_video = av.open(video_path)
+    frame_rate = av_video.streams.video[0].guessed_rate
+
+    approx_max_length = int(duration_sec * frame_rate) + 1
     reader = StreamingMediaDecoder(video_path)
     reader.add_basic_video_stream(
         frames_per_chunk=approx_max_length,
+        buffer_chunk_size=-1,
         format='rgb24',
     )
     reader.fill_buffer()
     video_chunk = reader.pop_chunks()[0]
     assert video_chunk is not None
 
-    fps = int(reader.get_out_stream_info(0).frame_rate)
-    if fps > 60:
-        log.warning(f'This code supports only up to 60 fps, but the video has {fps} fps')
-        log.warning(f'Just change the *60 above me')
-
     h, w = video_chunk.shape[-2:]
-    video_chunk = video_chunk[:int(fps * duration_sec)]
+    video_chunk = video_chunk[:int(frame_rate * duration_sec)]
 
     writer = StreamingMediaEncoder(output_path)
     writer.add_audio_stream(
@@ -234,7 +236,7 @@ def make_video(video_path: Path, output_path: Path, audio: torch.Tensor, samplin
         num_channels=audio.shape[0],
         encoder='aac',  # 'flac' does not work for some reason?
     )
-    writer.add_video_stream(frame_rate=fps,
+    writer.add_video_stream(frame_rate=frame_rate,
                             width=w,
                             height=h,
                             format='rgb24',

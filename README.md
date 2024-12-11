@@ -63,6 +63,7 @@ pip install -e .
 **Pretrained models:**
 
 The models will be downloaded automatically when you run the demo script. MD5 checksums are provided in `mmaudio/utils/download_utils.py`
+The models are also available at https://huggingface.co/hkchengrex/MMAudio/tree/main
 
 | Model    | Download link | File size |
 | -------- | ------- | ------- |
@@ -70,7 +71,7 @@ The models will be downloaded automatically when you run the demo script. MD5 ch
 | Flow prediction network, small 44.1kHz | <a href="https://databank.illinois.edu/datafiles/864ya/download" download="mmaudio_small_44k.pth">mmaudio_small_44k.pth</a> | 601M |
 | Flow prediction network, medium 44.1kHz | <a href="https://databank.illinois.edu/datafiles/pa94t/download" download="mmaudio_medium_44k.pth">mmaudio_medium_44k.pth</a> | 2.4G |
 | Flow prediction network, large 44.1kHz | <a href="https://databank.illinois.edu/datafiles/4jx76/download" download="mmaudio_large_44k.pth">mmaudio_large_44k.pth</a> | 3.9G |
-| Flow prediction network, large 44.1kHz, v2 **(recommended)** | <a href="https://huggingface.co/hkchengrex/MMAudio/resolve/main/weights/mmaudio_large_44k_v2.pth" download="mmaudio_large_44k_v2.pth">mmaudio_large_44k_v2.pth</a> | 3.9G |
+| Flow prediction network, large 44.1kHz, v2 **(recommended)** | <a href="https://databank.illinois.edu/datafiles/i1pd9/download" download="mmaudio_large_44k_v2.pth">mmaudio_large_44k_v2.pth</a> | 3.9G |
 | 16kHz VAE | <a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-16.pth">v1-16.pth</a> | 655M |
 | 16kHz BigVGAN vocoder |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/best_netG.pt">best_netG.pt</a> | 429M |
 | 44.1kHz VAE |<a href="https://github.com/hkchengrex/MMAudio/releases/download/v0.1/v1-44.pth">v1-44.pth</a> | 1.2G | 
@@ -127,7 +128,7 @@ The default output (and training) duration is 8 seconds. Longer/shorter duration
 
 ### Gradio interface
 
-Supports video-to-audio and text-to-audio synthesis. Use [port forwarding](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot) if necessary. Our default port is `17888` which you can change in `gradio_demo.py`.
+Supports video-to-audio and text-to-audio synthesis. Use [port forwarding](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot) if necessary. Our default port is `7860` which you can change in `gradio_demo.py`.
 
 ```
 python gradio_demo.py
@@ -149,7 +150,7 @@ Work in progress.
 
 ## Acknowledgement
 Many thanks to:
-- [Make-An-Audio 2](https://github.com/bytedance/Make-An-Audio-2) for the 16kHz BigVGAN pretrained model
+- [Make-An-Audio 2](https://github.com/bytedance/Make-An-Audio-2) for the 16kHz BigVGAN pretrained model and the VAE architecture
 - [BigVGAN](https://github.com/NVIDIA/BigVGAN)
 - [Synchformer](https://github.com/v-iashin/Synchformer) 
-
+- [EDM2](https://github.com/NVlabs/edm2) for the magnitude-preserving network architecture

@@ -47,6 +47,7 @@ dependencies = [
   'colorlog',
   'open_clip_torch',
   'soundfile',
+  'av',
 ]
 
 [tool.hatch.build.targets.wheel]

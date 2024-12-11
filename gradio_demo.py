@@ -128,8 +128,8 @@ video_to_audio_tab = gr.Interface(
     title='MMAudio — Video-to-Audio Synthesis',
     examples=[
         [
-            'https://huggingface.co/hkchengrex/MMAudio/resolve/main/examples/sora_nyc.mp4',
-            '',
+            'https://huggingface.co/hkchengrex/MMAudio/resolve/main/examples/sora_beach.mp4',
+            'waves, seagulls',
             '',
             0,
             25,
@@ -166,15 +166,6 @@ video_to_audio_tab = gr.Interface(
         [
             'https://huggingface.co/hkchengrex/MMAudio/resolve/main/examples/sora_galloping.mp4',
             'galloping',
-            '',
-            0,
-            25,
-            4.5,
-            10,
-        ],
-        [
-            'https://huggingface.co/hkchengrex/MMAudio/resolve/main/examples/sora_beach.mp4',
-            'waves, seagulls',
             '',
             0,
             25,
@@ -226,6 +217,15 @@ video_to_audio_tab = gr.Interface(
             4.5,
             10,
         ],
+        [
+            'https://huggingface.co/hkchengrex/MMAudio/resolve/main/examples/sora_nyc.mp4',
+            '',
+            '',
+            0,
+            25,
+            4.5,
+            10,
+        ],
     ])
 
 text_to_audio_tab = gr.Interface(
@@ -245,5 +245,5 @@ text_to_audio_tab = gr.Interface(
 
 if __name__ == "__main__":
     gr.TabbedInterface([video_to_audio_tab, text_to_audio_tab],
-                       ['Video-to-Audio', 'Text-to-Audio']).launch(server_port=17888,
+                       ['Video-to-Audio', 'Text-to-Audio']).launch(server_port=7860,
                                                                    allowed_paths=[output_dir])

@@ -5,8 +5,8 @@ from pathlib import Path
 import torch
 import torchaudio
 
-from mmaudio.eval_utils import (ModelConfig, all_model_cfg, generate,
-                                load_video, make_video, setup_eval_logging)
+from mmaudio.eval_utils import (ModelConfig, all_model_cfg, generate, load_video, make_video,
+                                setup_eval_logging)
 from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio, get_my_mmaudio
 from mmaudio.model.utils.features_utils import FeaturesUtils
