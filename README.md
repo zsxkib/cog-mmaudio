@@ -45,13 +45,24 @@ We recommend using a [miniforge](https://github.com/conda-forge/miniforge) envir
 - PyTorch **2.5.1+** and corresponding torchvision/torchaudio (pick your CUDA version https://pytorch.org/, pip install recommended)
 - ffmpeg<7 ([this is required by torchaudio](https://pytorch.org/audio/master/installation.html#optional-dependencies), you can install it in a miniforge environment with `conda install -c conda-forge 'ffmpeg<7'`)
 
-**Clone our repository:**
+**1. Install prerequisite if not yet met:**
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 --upgrade
+```
+(Or any other CUDA versions that your GPUs/driver support)
+
+```
+conda install -c conda-forge 'ffmpeg<7
+```
+(Optional, if you use miniforge and don't already have the appropriate ffmpeg)
+
+**2. Clone our repository:**
 
 ```bash
 git clone https://github.com/hkchengrex/MMAudio.git
 ```
 
-**Install with pip (install pytorch first before attempting this!):**
+**3. Install with pip (install pytorch first before attempting this!):**
 
 ```bash
 cd MMAudio
