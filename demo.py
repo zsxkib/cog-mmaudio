@@ -81,7 +81,8 @@ def main():
                                   synchformer_ckpt=model.synchformer_ckpt,
                                   enable_conditions=True,
                                   mode=model.mode,
-                                  bigvgan_vocoder_ckpt=model.bigvgan_16k_path)
+                                  bigvgan_vocoder_ckpt=model.bigvgan_16k_path,
+                                  need_vae_encoder=False)
     feature_utils = feature_utils.to(device, dtype).eval()
 
     if video_path is not None:
