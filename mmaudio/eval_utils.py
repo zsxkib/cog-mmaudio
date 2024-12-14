@@ -3,12 +3,11 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-import av
 import torch
 from colorlog import ColoredFormatter
 from torchvision.transforms import v2
-from torio.io import StreamingMediaDecoder, StreamingMediaEncoder
 
+from mmaudio.data.av_utils import VideoInfo, read_frames, reencode_with_audio
 from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio
 from mmaudio.model.sequence_config import (CONFIG_16K, CONFIG_44K, SequenceConfig)
@@ -154,7 +153,7 @@ def setup_eval_logging(log_level: int = logging.INFO):
     log.addHandler(stream)
 
 
-def load_video(video_path: Path, duration_sec: float) -> tuple[torch.Tensor, torch.Tensor, float]:
+def load_video(video_path: Path, duration_sec: float, load_all_frames: bool = True) -> VideoInfo:
     _CLIP_SIZE = 384
     _CLIP_FPS = 8.0
 
@@ -175,26 +174,15 @@ def load_video(video_path: Path, duration_sec: float) -> tuple[torch.Tensor, tor
         v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ])
 
-    reader = StreamingMediaDecoder(video_path)
-    reader.add_basic_video_stream(
-        frames_per_chunk=int(_CLIP_FPS * duration_sec),
-        buffer_chunk_size=-1,
-        frame_rate=_CLIP_FPS,
-        format='rgb24',
-    )
-    reader.add_basic_video_stream(
-        frames_per_chunk=int(_SYNC_FPS * duration_sec),
-        buffer_chunk_size=-1,
-        frame_rate=_SYNC_FPS,
-        format='rgb24',
-    )
+    output_frames, all_frames, orig_fps = read_frames(video_path,
+                                                      list_of_fps=[_CLIP_FPS, _SYNC_FPS],
+                                                      start_sec=0,
+                                                      end_sec=duration_sec,
+                                                      need_all_frames=load_all_frames)
 
-    reader.fill_buffer()
-    data_chunk = reader.pop_chunks()
-    clip_chunk = data_chunk[0]
-    sync_chunk = data_chunk[1]
-    assert clip_chunk is not None
-    assert sync_chunk is not None
+    clip_chunk, sync_chunk = output_frames
+    clip_chunk = torch.from_numpy(clip_chunk).permute(0, 3, 1, 2)
+    sync_chunk = torch.from_numpy(sync_chunk).permute(0, 3, 1, 2)
 
     clip_frames = clip_transform(clip_chunk)
     sync_frames = sync_transform(sync_chunk)
@@ -215,41 +203,15 @@ def load_video(video_path: Path, duration_sec: float) -> tuple[torch.Tensor, tor
     clip_frames = clip_frames[:int(_CLIP_FPS * duration_sec)]
     sync_frames = sync_frames[:int(_SYNC_FPS * duration_sec)]
 
-    return clip_frames, sync_frames, duration_sec
-
-
-def make_video(video_path: Path, output_path: Path, audio: torch.Tensor, sampling_rate: int,
-               duration_sec: float):
-
-    av_video = av.open(video_path)
-    frame_rate = av_video.streams.video[0].guessed_rate
-
-    approx_max_length = int(duration_sec * frame_rate) + 1
-    reader = StreamingMediaDecoder(video_path)
-    reader.add_basic_video_stream(
-        frames_per_chunk=approx_max_length,
-        buffer_chunk_size=-1,
-        format='rgb24',
+    video_info = VideoInfo(
+        duration_sec=duration_sec,
+        fps=orig_fps,
+        clip_frames=clip_frames,
+        sync_frames=sync_frames,
+        all_frames=all_frames if load_all_frames else None,
     )
-    reader.fill_buffer()
-    video_chunk = reader.pop_chunks()[0]
-    assert video_chunk is not None
+    return video_info
 
-    h, w = video_chunk.shape[-2:]
-    video_chunk = video_chunk[:int(frame_rate * duration_sec)]
 
-    writer = StreamingMediaEncoder(output_path)
-    writer.add_audio_stream(
-        sample_rate=sampling_rate,
-        num_channels=audio.shape[0],
-        encoder='aac',  # 'flac' does not work for some reason?
-    )
-    writer.add_video_stream(frame_rate=frame_rate,
-                            width=w,
-                            height=h,
-                            format='rgb24',
-                            encoder='libx264',
-                            encoder_format='yuv420p')
-    with writer.open():
-        writer.write_audio_chunk(0, audio.float().transpose(0, 1))
-        writer.write_video_chunk(1, video_chunk)
+def make_video(video_info: VideoInfo, output_path: Path, audio: torch.Tensor, sampling_rate: int):
+    reencode_with_audio(video_info, output_path, audio, sampling_rate)

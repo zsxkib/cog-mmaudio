@@ -57,7 +57,10 @@ def video_to_audio(video: gr.Video, prompt: str, negative_prompt: str, seed: int
     rng.manual_seed(seed)
     fm = FlowMatching(min_sigma=0, inference_mode='euler', num_steps=num_steps)
 
-    clip_frames, sync_frames, duration = load_video(video, duration)
+    video_info = load_video(video, duration)
+    clip_frames = video_info.clip_frames
+    sync_frames = video_info.sync_frames
+    duration = video_info.duration_sec
     clip_frames = clip_frames.unsqueeze(0)
     sync_frames = sync_frames.unsqueeze(0)
     seq_cfg.duration = duration
@@ -76,11 +79,7 @@ def video_to_audio(video: gr.Video, prompt: str, negative_prompt: str, seed: int
     current_time_string = datetime.now().strftime('%Y%m%d_%H%M%S')
     output_dir.mkdir(exist_ok=True, parents=True)
     video_save_path = output_dir / f'{current_time_string}.mp4'
-    make_video(video,
-               video_save_path,
-               audio,
-               sampling_rate=seq_cfg.sampling_rate,
-               duration_sec=seq_cfg.duration)
+    make_video(video_info, video_save_path, audio, sampling_rate=seq_cfg.sampling_rate)
     return video_save_path
 
 

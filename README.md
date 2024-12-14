@@ -33,6 +33,12 @@ https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
 
 For more results, visit https://hkchengrex.com/MMAudio/video_main.html.
 
+## Update Logs
+
+- 2024-12-14: Removed the `ffmpeg<7` requirement for the demos by replacing `torio.io.StreamingMediaDecoder` with `pyav` for reading frames. The read frames are also cached, so we are not reading the same frames again during reconstruction. This should speed things up and make installation less of a hassle.
+- 2024-12-13: Improved for-loop processing in CLIP/Sync feature extraction by introducing a batch size multiplier. We can approximately use 40x batch size for CLIP/Sync without using more memory, thereby speeding up processing. Removed VAE encoder during inference -- we don't need it.
+- 2024-12-11: Replaced `torio.io.StreamingMediaDecoder` with `pyav` for reading framerate when reconstructing the input video. `torio.io.StreamingMediaDecoder` does not work reliably in huggingface ZeroGPU's environment, and I suspect that it might not work in some other environments as well.
+
 ## Installation
 
 We have only tested this on Ubuntu.
@@ -43,7 +49,7 @@ We recommend using a [miniforge](https://github.com/conda-forge/miniforge) envir
 
 - Python 3.9+
 - PyTorch **2.5.1+** and corresponding torchvision/torchaudio (pick your CUDA version https://pytorch.org/, pip install recommended)
-- ffmpeg<7 ([this is required by torchaudio](https://pytorch.org/audio/master/installation.html#optional-dependencies), you can install it in a miniforge environment with `conda install -c conda-forge 'ffmpeg<7'`)
+<!-- - ffmpeg<7 ([this is required by torchaudio](https://pytorch.org/audio/master/installation.html#optional-dependencies), you can install it in a miniforge environment with `conda install -c conda-forge 'ffmpeg<7'`) -->
 
 **1. Install prerequisite if not yet met:**
 ```
@@ -51,10 +57,10 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 ```
 (Or any other CUDA versions that your GPUs/driver support)
 
-```
+<!-- ```
 conda install -c conda-forge 'ffmpeg<7
 ```
-(Optional, if you use miniforge and don't already have the appropriate ffmpeg)
+(Optional, if you use miniforge and don't already have the appropriate ffmpeg) -->
 
 **2. Clone our repository:**
 
