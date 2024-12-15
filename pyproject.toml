@@ -48,6 +48,7 @@ dependencies = [
   'open_clip_torch',
   'soundfile',
   'av',
+  'timm >= 1.0.12',
 ]
 
 [tool.hatch.build.targets.wheel]
