@@ -13,8 +13,8 @@ from av import AudioFrame
 class VideoInfo:
     duration_sec: float
     fps: Fraction
-    clip_frames: list[torch.Tensor]
-    sync_frames: list[torch.Tensor]
+    clip_frames: torch.Tensor
+    sync_frames: torch.Tensor
     all_frames: Optional[list[np.ndarray]]
 
     @property

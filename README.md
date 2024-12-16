@@ -130,7 +130,7 @@ MMAudio
 
 ## Demo
 
-By default, these scripts use the `large_44k` model. 
+By default, these scripts use the `large_44k_v2` model. 
 In our experiments, inference only takes around 6GB of GPU memory (in 16-bit mode) which should fit in most modern GPUs.
 
 ### Command-line interface

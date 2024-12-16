@@ -14,7 +14,7 @@ column_limit = 100
 name = "mmaudio"
 version = "1.0.0"
 authors = [{ name = "Rex Cheng", email = "hkchengrex@gmail.com" }]
-description = ""
+description = "MMAudio generates synchronized audio given video and/or text inputs"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -41,7 +41,6 @@ dependencies = [
   'librosa >= 0.8.1',
   'nitrous-ema',
   'safetensors',
-  'auraloss',
   'hydra_colorlog',
   'tensordict',
   'colorlog',
