@@ -40,7 +40,7 @@ dependencies = [
   'librosa >= 0.8.1',
   'nitrous-ema',
   'hydra_colorlog',
-  'tensordict >= 0.6.2',
+  'tensordict >= 0.6.1',
   'colorlog',
   'open_clip_torch >= 2.29.0',
   'av >= 14.0.1',
