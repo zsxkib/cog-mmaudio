@@ -27,6 +27,10 @@ Videos from Sora:
 
 https://github.com/user-attachments/assets/82afd192-0cee-48a1-86ca-bd39b8c8f330
 
+Videos from Veo 2:
+
+https://github.com/user-attachments/assets/8a11419e-fee2-46e0-9e67-dfb03c48d00e
+
 Videos from MovieGen/Hunyuan Video/VGGSound:
 
 https://github.com/user-attachments/assets/29230d4e-21c1-4cf8-a221-c28f2af6d0ca
