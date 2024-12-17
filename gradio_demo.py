@@ -114,6 +114,13 @@ def text_to_audio(prompt: str, negative_prompt: str, seed: int, num_steps: int, 
 
 video_to_audio_tab = gr.Interface(
     fn=video_to_audio,
+    description="""
+    Project page: <a href="https://hkchengrex.com/MMAudio/">https://hkchengrex.com/MMAudio/</a><br>
+    Code: <a href="https://github.com/hkchengrex/MMAudio">https://github.com/hkchengrex/MMAudio</a><br>
+
+    NOTE: It takes longer to process high-resolution videos (>384 px on the shorter side). 
+    Doing so does not improve results.
+    """,
     inputs=[
         gr.Video(),
         gr.Text(label='Prompt'),
