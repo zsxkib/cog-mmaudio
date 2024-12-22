@@ -18,11 +18,11 @@ torch.backends.cudnn.allow_tf32 = True
 
 log = logging.getLogger()
 
-device = "cpu"
+device = 'cpu'
 if torch.backends.mps.is_available():
-    device = "mps"
+    device = 'mps'
 elif torch.cuda.is_available():
-    device = "cuda"
+    device = 'cuda'
 
 dtype = torch.bfloat16
 
