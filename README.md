@@ -189,7 +189,9 @@ Work in progress.
 
 ## Evaluation
 
-Work in progress.
+You can access the precomputed results on VGGSound, AudioCaps, and MovieGen here: https://huggingface.co/datasets/hkchengrex/MMAudio-precomputed-results
+
+We have shared our evaluation code here: https://github.com/hkchengrex/av-benchmark
 
 ## Training Datasets
 
@@ -198,7 +200,7 @@ MMAudio was trained on several datasets, including [AudioSet](https://research.g
 ## Citation
 
 ```bibtex
-@inproceedings{cheng2024putting,
+@inproceedings{cheng2024taming,
   title={Taming Multimodal Joint Training for High-Quality Video-to-Audio Synthesis},
   author={Cheng, Ho Kei and Ishii, Masato and Hayakawa, Akio and Shibuya, Takashi and Schwing, Alexander and Mitsufuji, Yuki},
   booktitle={arXiv},
