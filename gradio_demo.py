@@ -54,7 +54,7 @@ def video_to_audio(video: gr.Video, prompt: str, negative_prompt: str, seed: int
                    cfg_strength: float, duration: float):
 
     rng = torch.Generator(device=device)
-    if seed > 0:
+    if seed >= 0:
         rng.manual_seed(seed)
     else:
         rng.seed()
@@ -91,7 +91,7 @@ def text_to_audio(prompt: str, negative_prompt: str, seed: int, num_steps: int, 
                   duration: float):
 
     rng = torch.Generator(device=device)
-    if seed > 0:
+    if seed >= 0:
         rng.manual_seed(seed)
     else:
         rng.seed()
