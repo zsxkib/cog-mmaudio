@@ -18,7 +18,12 @@ torch.backends.cudnn.allow_tf32 = True
 
 log = logging.getLogger()
 
-device = 'cuda'
+device = "cpu"
+if torch.backends.mps.is_available():
+    device = "mps"
+elif torch.cuda.is_available():
+    device = "cuda"
+
 dtype = torch.bfloat16
 
 model: ModelConfig = all_model_cfg['large_44k_v2']
