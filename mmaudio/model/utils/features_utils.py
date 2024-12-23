@@ -9,7 +9,7 @@ from open_clip import create_model_from_pretrained
 from torchvision.transforms import Normalize
 
 from mmaudio.ext.autoencoder import AutoEncoderModule
-from mmaudio.ext.mel_converter import MelConverter
+from mmaudio.ext.mel_converter import get_mel_converter
 from mmaudio.ext.synchformer import Synchformer
 from mmaudio.model.utils.distributions import DiagonalGaussianDistribution
 
@@ -63,13 +63,13 @@ class FeaturesUtils(nn.Module):
             self.tokenizer = None
 
         if tod_vae_ckpt is not None:
+            self.mel_converter = get_mel_converter(mode)
             self.tod = AutoEncoderModule(vae_ckpt_path=tod_vae_ckpt,
                                          vocoder_ckpt_path=bigvgan_vocoder_ckpt,
                                          mode=mode,
                                          need_vae_encoder=need_vae_encoder)
         else:
             self.tod = None
-        self.mel_converter = MelConverter()
 
     def compile(self):
         if self.clip_model is not None:
