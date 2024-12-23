@@ -11,8 +11,6 @@
 
 University of Illinois Urbana-Champaign, Sony AI, and Sony Group Corporation
 
-**Note: This repository is still under construction. Single-example inference should work as expected. The training code will be added. Code is subject to non-backward-compatible changes.**
-
 ## Highlight
 
 MMAudio generates synchronized audio given video and/or text inputs.
