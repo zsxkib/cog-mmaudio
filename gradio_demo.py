@@ -251,7 +251,7 @@ text_to_audio_tab = gr.Interface(
     inputs=[
         gr.Text(label='Prompt'),
         gr.Text(label='Negative prompt'),
-        gr.Number(label='Seed', value=0, precision=0, minimum=0),
+        gr.Number(label='Seed (-1: random)', value=-1, precision=0, minimum=-1),
         gr.Number(label='Num steps', value=25, precision=0, minimum=1),
         gr.Number(label='Guidance Strength', value=4.5, minimum=1),
         gr.Number(label='Duration (sec)', value=8, minimum=1),
