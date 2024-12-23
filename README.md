@@ -162,6 +162,10 @@ MMAudio was trained on several datasets, including [AudioSet](https://research.g
 }
 ```
 
+## Relevant Repositories
+
+- [av-benchmark](https://github.com/hkchengrex/av-benchmark) for benchmarking results.
+
 ## Acknowledgement
 
 Many thanks to:
