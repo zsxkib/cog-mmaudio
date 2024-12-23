@@ -23,7 +23,8 @@ if torch.backends.mps.is_available():
     device = 'mps'
 elif torch.cuda.is_available():
     device = 'cuda'
-
+else:
+    log.warning('CUDA/MPS are not available, running on CPU')
 dtype = torch.bfloat16
 
 model: ModelConfig = all_model_cfg['large_44k_v2']
