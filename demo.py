@@ -63,10 +63,10 @@ def main():
     mask_away_clip: bool = args.mask_away_clip
 
     device = 'cpu'
-    if torch.backends.mps.is_available():
-        device = 'mps'
-    elif torch.cuda.is_available():
+    if torch.cuda.is_available():
         device = 'cuda'
+    elif torch.backends.mps.is_available():
+        device = 'mps'
     else:
         log.warning('CUDA/MPS are not available, running on CPU')
     dtype = torch.float32 if args.full_precision else torch.bfloat16
