@@ -112,7 +112,7 @@ python gradio_demo.py
 ### FAQ
 
 1. Video processing
-    - Processing higher-resolution videos takes longer due to encoding and decoding, but it does not improve the quality of results.
+    - Processing higher-resolution videos takes longer due to encoding and decoding (which can take >95% of the processing time!), but it does not improve the quality of results.
     - The CLIP encoder resizes input frames to 384×384 pixels. 
     - Synchformer resizes the shorter edge to 224 pixels and applies a center crop, focusing only on the central square of each frame.
 2. Frame rates
