@@ -25,6 +25,32 @@ class VideoInfo:
     def width(self):
         return self.all_frames[0].shape[1]
 
+    @classmethod
+    def from_image_info(cls, image_info: 'ImageInfo', duration_sec: float,
+                        fps: Fraction) -> 'VideoInfo':
+        num_frames = int(duration_sec * fps)
+        all_frames = [image_info.original_frame] * num_frames
+        return cls(duration_sec=duration_sec,
+                   fps=fps,
+                   clip_frames=image_info.clip_frames,
+                   sync_frames=image_info.sync_frames,
+                   all_frames=all_frames)
+
+
+@dataclass
+class ImageInfo:
+    clip_frames: torch.Tensor
+    sync_frames: torch.Tensor
+    original_frame: Optional[np.ndarray]
+
+    @property
+    def height(self):
+        return self.original_frame.shape[0]
+
+    @property
+    def width(self):
+        return self.original_frame.shape[1]
+
 
 def read_frames(video_path: Path, list_of_fps: list[float], start_sec: float, end_sec: float,
                 need_all_frames: bool) -> tuple[list[np.ndarray], list[np.ndarray], Fraction]:

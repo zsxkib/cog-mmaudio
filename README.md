@@ -103,7 +103,9 @@ The default output (and training) duration is 8 seconds. Longer/shorter duration
 
 ### Gradio interface
 
-Supports video-to-audio and text-to-audio synthesis. Use [port forwarding](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot) (e.g., `ssh -L 7860:localhost:7860 server`) if necessary. The default port is `7860` which you can change in `gradio_demo.py`.
+Supports video-to-audio and text-to-audio synthesis.
+You can also try experimental image-to-audio synthesis which duplicates the input image to a video for processing. This might be interesting to some but it is not something MMAudio has been trained for.
+Use [port forwarding](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot) (e.g., `ssh -L 7860:localhost:7860 server`) if necessary. The default port is `7860` which you can change in `gradio_demo.py`.
 
 ```bash
 python gradio_demo.py

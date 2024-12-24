@@ -3,14 +3,16 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import torch
 from colorlog import ColoredFormatter
+from PIL import Image
 from torchvision.transforms import v2
 
-from mmaudio.data.av_utils import VideoInfo, read_frames, reencode_with_audio
+from mmaudio.data.av_utils import ImageInfo, VideoInfo, read_frames, reencode_with_audio
 from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio
-from mmaudio.model.sequence_config import (CONFIG_16K, CONFIG_44K, SequenceConfig)
+from mmaudio.model.sequence_config import CONFIG_16K, CONFIG_44K, SequenceConfig
 from mmaudio.model.utils.features_utils import FeaturesUtils
 from mmaudio.utils.download_utils import download_model_if_needed
 
@@ -88,6 +90,7 @@ def generate(
     cfg_strength: float,
     clip_batch_size_multiplier: int = 40,
     sync_batch_size_multiplier: int = 40,
+    image_input: bool = False,
 ) -> torch.Tensor:
     device = feature_utils.device
     dtype = feature_utils.dtype
@@ -98,10 +101,12 @@ def generate(
         clip_features = feature_utils.encode_video_with_clip(clip_video,
                                                              batch_size=bs *
                                                              clip_batch_size_multiplier)
+        if image_input:
+            clip_features = clip_features.expand(-1, net.clip_seq_len, -1)
     else:
         clip_features = net.get_empty_clip_sequence(bs)
 
-    if sync_video is not None:
+    if sync_video is not None and not image_input:
         sync_video = sync_video.to(device, dtype, non_blocking=True)
         sync_features = feature_utils.encode_video_with_sync(sync_video,
                                                              batch_size=bs *
@@ -153,12 +158,14 @@ def setup_eval_logging(log_level: int = logging.INFO):
     log.addHandler(stream)
 
 
-def load_video(video_path: Path, duration_sec: float, load_all_frames: bool = True) -> VideoInfo:
-    _CLIP_SIZE = 384
-    _CLIP_FPS = 8.0
+_CLIP_SIZE = 384
+_CLIP_FPS = 8.0
 
-    _SYNC_SIZE = 224
-    _SYNC_FPS = 25.0
+_SYNC_SIZE = 224
+_SYNC_FPS = 25.0
+
+
+def load_video(video_path: Path, duration_sec: float, load_all_frames: bool = True) -> VideoInfo:
 
     clip_transform = v2.Compose([
         v2.Resize((_CLIP_SIZE, _CLIP_SIZE), interpolation=v2.InterpolationMode.BICUBIC),
@@ -209,6 +216,37 @@ def load_video(video_path: Path, duration_sec: float, load_all_frames: bool = Tr
         clip_frames=clip_frames,
         sync_frames=sync_frames,
         all_frames=all_frames if load_all_frames else None,
+    )
+    return video_info
+
+
+def load_image(image_path: Path) -> VideoInfo:
+    clip_transform = v2.Compose([
+        v2.Resize((_CLIP_SIZE, _CLIP_SIZE), interpolation=v2.InterpolationMode.BICUBIC),
+        v2.ToImage(),
+        v2.ToDtype(torch.float32, scale=True),
+    ])
+
+    sync_transform = v2.Compose([
+        v2.Resize(_SYNC_SIZE, interpolation=v2.InterpolationMode.BICUBIC),
+        v2.CenterCrop(_SYNC_SIZE),
+        v2.ToImage(),
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+    ])
+
+    frame = np.array(Image.open(image_path))
+
+    clip_chunk = torch.from_numpy(frame).unsqueeze(0).permute(0, 3, 1, 2)
+    sync_chunk = torch.from_numpy(frame).unsqueeze(0).permute(0, 3, 1, 2)
+
+    clip_frames = clip_transform(clip_chunk)
+    sync_frames = sync_transform(sync_chunk)
+
+    video_info = ImageInfo(
+        clip_frames=clip_frames,
+        sync_frames=sync_frames,
+        original_frame=frame,
     )
     return video_info
 

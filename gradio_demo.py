@@ -1,13 +1,14 @@
 import logging
 from datetime import datetime
+from fractions import Fraction
 from pathlib import Path
 
 import gradio as gr
 import torch
 import torchaudio
 
-from mmaudio.eval_utils import (ModelConfig, all_model_cfg, generate, load_video, make_video,
-                                setup_eval_logging)
+from mmaudio.eval_utils import (ModelConfig, VideoInfo, all_model_cfg, generate, load_image,
+                                load_video, make_video, setup_eval_logging)
 from mmaudio.model.flow_matching import FlowMatching
 from mmaudio.model.networks import MMAudio, get_my_mmaudio
 from mmaudio.model.sequence_config import SequenceConfig
@@ -88,6 +89,44 @@ def video_to_audio(video: gr.Video, prompt: str, negative_prompt: str, seed: int
     current_time_string = datetime.now().strftime('%Y%m%d_%H%M%S')
     output_dir.mkdir(exist_ok=True, parents=True)
     video_save_path = output_dir / f'{current_time_string}.mp4'
+    make_video(video_info, video_save_path, audio, sampling_rate=seq_cfg.sampling_rate)
+    return video_save_path
+
+
+@torch.inference_mode()
+def image_to_audio(image: gr.Image, prompt: str, negative_prompt: str, seed: int, num_steps: int,
+                   cfg_strength: float, duration: float):
+
+    rng = torch.Generator(device=device)
+    if seed >= 0:
+        rng.manual_seed(seed)
+    else:
+        rng.seed()
+    fm = FlowMatching(min_sigma=0, inference_mode='euler', num_steps=num_steps)
+
+    image_info = load_image(image)
+    clip_frames = image_info.clip_frames
+    sync_frames = image_info.sync_frames
+    clip_frames = clip_frames.unsqueeze(0)
+    sync_frames = sync_frames.unsqueeze(0)
+    seq_cfg.duration = duration
+    net.update_seq_lengths(seq_cfg.latent_seq_len, seq_cfg.clip_seq_len, seq_cfg.sync_seq_len)
+
+    audios = generate(clip_frames,
+                      sync_frames, [prompt],
+                      negative_text=[negative_prompt],
+                      feature_utils=feature_utils,
+                      net=net,
+                      fm=fm,
+                      rng=rng,
+                      cfg_strength=cfg_strength,
+                      image_input=True)
+    audio = audios.float().cpu()[0]
+
+    current_time_string = datetime.now().strftime('%Y%m%d_%H%M%S')
+    output_dir.mkdir(exist_ok=True, parents=True)
+    video_save_path = output_dir / f'{current_time_string}.mp4'
+    video_info = VideoInfo.from_image_info(image_info, duration, fps=Fraction(1))
     make_video(video_info, video_save_path, audio, sampling_rate=seq_cfg.sampling_rate)
     return video_save_path
 
@@ -249,6 +288,10 @@ video_to_audio_tab = gr.Interface(
 
 text_to_audio_tab = gr.Interface(
     fn=text_to_audio,
+    description="""
+    Project page: <a href="https://hkchengrex.com/MMAudio/">https://hkchengrex.com/MMAudio/</a><br>
+    Code: <a href="https://github.com/hkchengrex/MMAudio">https://github.com/hkchengrex/MMAudio</a><br>
+    """,
     inputs=[
         gr.Text(label='Prompt'),
         gr.Text(label='Negative prompt'),
@@ -262,7 +305,30 @@ text_to_audio_tab = gr.Interface(
     title='MMAudio — Text-to-Audio Synthesis',
 )
 
+image_to_audio_tab = gr.Interface(
+    fn=image_to_audio,
+    description="""
+    Project page: <a href="https://hkchengrex.com/MMAudio/">https://hkchengrex.com/MMAudio/</a><br>
+    Code: <a href="https://github.com/hkchengrex/MMAudio">https://github.com/hkchengrex/MMAudio</a><br>
+
+    NOTE: It takes longer to process high-resolution images (>384 px on the shorter side). 
+    Doing so does not improve results.
+    """,
+    inputs=[
+        gr.Image(type='filepath'),
+        gr.Text(label='Prompt'),
+        gr.Text(label='Negative prompt'),
+        gr.Number(label='Seed (-1: random)', value=-1, precision=0, minimum=-1),
+        gr.Number(label='Num steps', value=25, precision=0, minimum=1),
+        gr.Number(label='Guidance Strength', value=4.5, minimum=1),
+        gr.Number(label='Duration (sec)', value=8, minimum=1),
+    ],
+    outputs='playable_video',
+    cache_examples=False,
+    title='MMAudio — Image-to-Audio Synthesis (experimental)',
+)
+
 if __name__ == "__main__":
-    gr.TabbedInterface([video_to_audio_tab, text_to_audio_tab],
-                       ['Video-to-Audio', 'Text-to-Audio']).launch(server_port=7860,
-                                                                   allowed_paths=[output_dir])
+    gr.TabbedInterface([video_to_audio_tab, text_to_audio_tab, image_to_audio_tab],
+                       ['Video-to-Audio', 'Text-to-Audio', 'Image-to-Audio (experimental)']).launch(
+                           server_port=7860, allowed_paths=[output_dir])
