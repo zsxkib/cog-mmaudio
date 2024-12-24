@@ -2,7 +2,7 @@
 
 ## Overview
 
-We have put a large emphasis on making training as fast as possible. 
+We have put a large emphasis on making training as fast as possible.
 Consequently, some pre-processing steps are required.
 
 Namely, before starting any training, we
@@ -12,8 +12,16 @@ Namely, before starting any training, we
 3. Extract CLIP features from text (captions)
 4. Encode all extracted features into [MemoryMappedTensors](https://pytorch.org/tensordict/main/reference/generated/tensordict.MemoryMappedTensor.html) with [TensorDict](https://pytorch.org/tensordict/main/reference/tensordict.html)
 
-
 **NOTE:** for maximum training speed (e.g., when training the base model with 2*H100s), you would need around 3~5 GB/s of random read speed. Spinning disks would not be able to catch up and most consumer-grade SSDs would struggle. In my experience, the best bet is to have a large enough system memory such that the OS can cache the data. This way, the data is read from RAM instead of disk.
+
+## Prerequisites
+
+Install [av-benchmark](https://github.com/hkchengrex/av-benchmark). We use this library to automatically evaluate on the validation set during training, and on test set after training.
+You will also need ffmpeg for video frames extraction. Note that `torchaudio` imposes a maximum version limit (`ffmpeg<7`). You can install it as follows:
+
+```bash
+conda install -c conda-forge 'ffmpeg<7'
+```
 
 ## Preparing Audio-Video-Text Features
 
@@ -26,7 +34,7 @@ To run this script, use the `torchrun` utility:
 torchrun --standalone training/extract_video_training_latents.py
 ```
 
-You can also run this with multiple GPUs to speed up extraction.
+You can run this with multiple GPUs (with `--nproc_per_node=<n>`) to speed up extraction.
 Check the top of the script to switch between 16kHz/44.1kHz extraction and data path definitions.
 
 Arguments:
@@ -59,6 +67,7 @@ Then, run the `extract_audio_training_latents.py` with `torchrun`:
 torchrun --standalone training/extract_audio_training_latents.py
 ```
 
+You can run this with multiple GPUs (with `--nproc_per_node=<n>`) to speed up extraction.
 Check the top of the script to switch between 16kHz/44.1kHz extraction.
 
 Arguments:
@@ -69,11 +78,7 @@ Arguments:
 - `latent_dir` -- where intermediate latent outputs are saved. It is safe to delete this directory afterwards.
 - `output_dir` -- where TensorDict and the metadata file are saved.
 
-
 ## Training
-
-**Before training, install [av-benchmark](https://github.com/hkchengrex/av-benchmark).** 
-We use this script to automatically evaluate on the validation set during training, and on test set after training.
 
 We use Distributed Data Parallel (DDP) for training.
 First, specify the data path in `config/data/base.yaml`. If you used the default parameters in the scripts above to extract features for the example data, the `Example_video` and `Example_audio` items should already be correct.
