@@ -14,6 +14,8 @@ Namely, before starting any training, we
 
 **NOTE:** for maximum training speed (e.g., when training the base model with 2*H100s), you would need around 3~5 GB/s of random read speed. Spinning disks would not be able to catch up and most consumer-grade SSDs would struggle. In my experience, the best bet is to have a large enough system memory such that the OS can cache the data. This way, the data is read from RAM instead of disk.
 
+The current training script does not support `_v2` training.
+
 ## Prerequisites
 
 Install [av-benchmark](https://github.com/hkchengrex/av-benchmark). We use this library to automatically evaluate on the validation set during training, and on test set after training.
@@ -22,6 +24,8 @@ You will also need ffmpeg for video frames extraction. Note that `torchaudio` im
 ```bash
 conda install -c conda-forge 'ffmpeg<7'
 ```
+
+Download the corresponding VAE (`v1-16.pth` for 16kHz training, and `v1-44.pth` for 44.1kHz training), vocoder models (`best_netG.pt` for 16kHz training; the vocoder for 44.1kHz training will be downloaded automatically), and the [empty string encoding](https://github.com/hkchengrex/MMAudio/releases/download/v0.1/empty_string.pth) from [MODELS.md](https://github.com/hkchengrex/MMAudio/blob/main/docs/MODELS.md) place them in `ext_weights/`.
 
 ## Preparing Audio-Video-Text Features
 
