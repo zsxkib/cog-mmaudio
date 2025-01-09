@@ -82,6 +82,8 @@ Arguments:
 - `latent_dir` -- where intermediate latent outputs are saved. It is safe to delete this directory afterwards.
 - `output_dir` -- where TensorDict and the metadata file are saved.
 
+The reference tsv files (with overlaps removed as mentioned in the paper) can be found [here](https://github.com/hkchengrex/MMAudio/releases/tag/v0.1). Note that `audioset_sl.tsv`, `bbcsound.tsv`, and `freesound.tsv` are subsets that are parts of WavCaps. These subsets might be smaller than the original datasets.
+
 ## Training
 
 We use Distributed Data Parallel (DDP) for training.
