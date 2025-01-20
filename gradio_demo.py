@@ -1,3 +1,4 @@
+import gc
 import logging
 from argparse import ArgumentParser
 from datetime import datetime
@@ -91,6 +92,7 @@ def video_to_audio(video: gr.Video, prompt: str, negative_prompt: str, seed: int
     output_dir.mkdir(exist_ok=True, parents=True)
     video_save_path = output_dir / f'{current_time_string}.mp4'
     make_video(video_info, video_save_path, audio, sampling_rate=seq_cfg.sampling_rate)
+    gc.collect()
     return video_save_path
 
 
@@ -129,6 +131,7 @@ def image_to_audio(image: gr.Image, prompt: str, negative_prompt: str, seed: int
     video_save_path = output_dir / f'{current_time_string}.mp4'
     video_info = VideoInfo.from_image_info(image_info, duration, fps=Fraction(1))
     make_video(video_info, video_save_path, audio, sampling_rate=seq_cfg.sampling_rate)
+    gc.collect()
     return video_save_path
 
 
@@ -161,6 +164,7 @@ def text_to_audio(prompt: str, negative_prompt: str, seed: int, num_steps: int, 
     output_dir.mkdir(exist_ok=True, parents=True)
     audio_save_path = output_dir / f'{current_time_string}.flac'
     torchaudio.save(audio_save_path, audio, seq_cfg.sampling_rate)
+    gc.collect()
     return audio_save_path
 
 
