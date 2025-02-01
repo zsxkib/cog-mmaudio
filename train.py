@@ -167,7 +167,7 @@ def train(cfg: DictConfig):
                                                             save_eval=save_eval)
                     distributed.barrier()
                     trainer.rng.graphsafe_set_state(train_rng_snapshot)
-                    trainer.eval(audio_path, curr_iter, 1, val_cfg)
+                    trainer.eval(audio_path, curr_iter, val_cfg)
 
                 curr_iter += 1
 
