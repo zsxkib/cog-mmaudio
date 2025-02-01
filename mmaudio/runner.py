@@ -226,10 +226,7 @@ class Runner:
 
         # classifier-free training
         samples = torch.rand(bs, device=x1.device, generator=self.rng)
-
-        # null mask is for when a video is provided but we decided to ignore it
         null_video = (samples < self.null_condition_probability)
-        # complete mask is for when a video is not provided or we decided to ignore it
         clip_f[null_video] = self.network.module.empty_clip_feat
         sync_f[null_video] = self.network.module.empty_sync_feat
 
@@ -475,25 +472,22 @@ class Runner:
 
     @torch.inference_mode()
     def eval(self, audio_dir: Path, it: int, data_cfg: DictConfig) -> dict[str, float]:
-        # rank 0 model only, outside of AMP
-        info_if_rank_zero(self.log, 'Eval: entering barrier')
-        torch.distributed.barrier()
-        info_if_rank_zero(self.log, 'Eval: barrier resolved')
-        if local_rank == 0:
-            extract(audio_path=audio_dir,
-                    output_path=audio_dir / 'cache',
-                    device='cuda',
-                    batch_size=32,
-                    audio_length=8)
-            output_metrics = evaluate(gt_audio_cache=Path(data_cfg.gt_cache),
-                                      pred_audio_cache=audio_dir / 'cache')
-            for k, v in output_metrics.items():
-                # pad k to 10 characters
-                # pad v to 10 decimal places
-                self.log.log_scalar(f'{data_cfg.tag}/{k}', v, it)
-                self.log.info(f'{data_cfg.tag}/{k:<10}: {v:.10f}')
-        else:
-            output_metrics = None
+        with torch.amp.autocast('cuda', enabled=False):
+            if local_rank == 0:
+                extract(audio_path=audio_dir,
+                        output_path=audio_dir / 'cache',
+                        device='cuda',
+                        batch_size=32,
+                        audio_length=8)
+                output_metrics = evaluate(gt_audio_cache=Path(data_cfg.gt_cache),
+                                          pred_audio_cache=audio_dir / 'cache')
+                for k, v in output_metrics.items():
+                    # pad k to 10 characters
+                    # pad v to 10 decimal places
+                    self.log.log_scalar(f'{data_cfg.tag}/{k}', v, it)
+                    self.log.info(f'{data_cfg.tag}/{k:<10}: {v:.10f}')
+            else:
+                output_metrics = None
 
         return output_metrics
 

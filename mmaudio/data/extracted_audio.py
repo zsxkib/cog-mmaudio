@@ -36,11 +36,10 @@ class ExtractedAudio(Dataset):
         self.std = td['std']
         self.text_features = td['text_features']
 
-        if local_rank == 0:
-            log.info(f'Loaded {len(self)} samples from.')
-            log.info(f'Loaded mean: {self.mean.shape}.')
-            log.info(f'Loaded std: {self.std.shape}.')
-            log.info(f'Loaded text features: {self.text_features.shape}.')
+        log.info(f'Loaded {len(self)} samples from {premade_mmap_dir}.')
+        log.info(f'Loaded mean: {self.mean.shape}.')
+        log.info(f'Loaded std: {self.std.shape}.')
+        log.info(f'Loaded text features: {self.text_features.shape}.')
 
         assert self.mean.shape[1] == self.data_dim['latent_seq_len'], \
             f'{self.mean.shape[1]} != {self.data_dim["latent_seq_len"]}'
