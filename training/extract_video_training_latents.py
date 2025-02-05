@@ -29,6 +29,11 @@ bigvgan_path = './ext_weights/best_netG.pt'
 mode = '16k'
 
 # for the 44.1kHz model
+"""
+NOTE: 352800 (8*44100) is not divisible by (STFT hop size * VAE downsampling ratio) which is 1024.
+353280 is the next integer divisible by 1024.
+"""
+
 # SAMPLING_RATE = 44100
 # DURATION_SEC = 8.0
 # NUM_SAMPLES = 353280
@@ -45,6 +50,7 @@ NUM_WORKERS = 16
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
+# uncomment the train/test/val sets to extract latents for them
 data_cfg = {
     'example': {
         'root': './training/example_videos',

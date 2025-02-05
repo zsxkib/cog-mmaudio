@@ -10,11 +10,11 @@ min_length_sec = 8.1
 max_segments_per_clip = 5
 
 parser = argparse.ArgumentParser(description='Process audio clips.')
-parser.add_argument('--data_path',
+parser.add_argument('--data_dir',
                     type=Path,
                     help='Path to the directory containing audio files',
                     default='./training/example_audios')
-parser.add_argument('--output_path',
+parser.add_argument('--output_dir',
                     type=Path,
                     help='Path to the output tsv file',
                     default='./training/example_output/clips.tsv')
@@ -22,8 +22,8 @@ parser.add_argument('--start', type=int, help='Start index for processing files'
 parser.add_argument('--end', type=int, help='End index for processing files', default=-1)
 args = parser.parse_args()
 
-data_path = args.data_path
-output_path = args.output_path
+data_dir = args.data_dir
+output_dir = args.output_dir
 start = args.start
 end = args.end
 
@@ -31,12 +31,12 @@ output_data = []
 
 blacklisted = 0
 if end == -1:
-    end = len(os.listdir(data_path))
-audio_files = sorted(os.listdir(data_path))[start:end]
+    end = len(os.listdir(data_dir))
+audio_files = sorted(os.listdir(data_dir))[start:end]
 print(f'Processing {len(audio_files)} files from {start} to {end}')
 
 for audio_file in tqdm(audio_files):
-    audio_file_path = data_path / audio_file
+    audio_file_path = data_dir / audio_file
     audio_name = audio_file_path.stem
 
     waveform, sample_rate = torchaudio.load(audio_file_path)
@@ -60,6 +60,6 @@ for audio_file in tqdm(audio_files):
         audio_id = f'{audio_name}_{i}'
         output_data.append((audio_id, audio_name, start_sample, end_sample))
 
-output_path.parent.mkdir(parents=True, exist_ok=True)
+output_dir.parent.mkdir(parents=True, exist_ok=True)
 output_df = pd.DataFrame(output_data, columns=['id', 'name', 'start_sample', 'end_sample'])
-output_df.to_csv(output_path, index=False, sep='\t')
+output_df.to_csv(output_dir, index=False, sep='\t')

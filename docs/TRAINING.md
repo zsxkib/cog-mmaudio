@@ -31,8 +31,8 @@ Download the corresponding VAE (`v1-16.pth` for 16kHz training, and `v1-44.pth` 
 
 ## Preparing Audio-Video-Text Features
 
-We have prepared some example data in `training/example_videos`. 
-Running the `training/extract_video_training_latents.py` script will extract the audio, video, and text features and save them as a `TensorDict` with a `.tsv` file containing metadata on disk.
+We have prepared some example data in `training/example_videos`.
+`training/extract_video_training_latents.py` extracts audio, video, and text features and save them as a `TensorDict` with a `.tsv` file containing metadata to `output_dir`.
 
 To run this script, use the `torchrun` utility:
 
@@ -40,21 +40,36 @@ To run this script, use the `torchrun` utility:
 torchrun --standalone training/extract_video_training_latents.py
 ```
 
-You can run this with multiple GPUs (with `--nproc_per_node=<n>`) to speed up extraction.
-Check the top of the script to switch between 16kHz/44.1kHz extraction and data path definitions.
+You can run this script with multiple GPUs (with `--nproc_per_node=<n>` after `--standalone` and before the script name) to speed up extraction.
+Modify the definitions near the top of the script to switch between 16kHz/44.1kHz extraction.
+Change the data path definitions in `data_cfg` if necessary.
 
 Arguments:
 
 - `latent_dir` -- where intermediate latent outputs are saved. It is safe to delete this directory afterwards.
 - `output_dir` -- where TensorDict and the metadata file are saved.
 
+Outputs produced in `output_dir`:
+
+1. A directory named `vgg-{split}` (i.e., in the TensorDict format), containing
+    a. `mean.memmap` mean values predicted by the VAE encoder (number of videos X sequence length X channel size)
+    b. `std.memmap` standard deviation values predicted by the VAE encoder (number of videos X sequence length X channel size)
+    c. `text_features.memmap` text features extracted from CLIP (number of videos X 77 (sequence length) X 1024)
+    d. `clip_features.memmap` clip features extracted from CLIP (number of videos X 64 (8 fps) X 1024)
+    e. `sync_features.memmap` synchronization features extracted from Synchformer (number of videos X 192 (24 fps) X 768)
+    f. `meta.json` that contains the metadata for the above memory mappings
+2. A tab-separated values file named `vgg-{split}.tsv` that contains two columns: `id` containing video file names without extension, and `label` containing corresponding text labels (i.e., captions)
+
 ## Preparing Audio-Text Features
 
-We have prepared some example data in `training/example_audios`. 
-First, run `training/partition_clips` to partition each audio file into clips. 
-Then, run the `training/extract_audio_training_latents.py` which extracts each clip's audio and text features and saves them as a `TensorDict` with a `.tsv` file containing metadata on the disk.
+We have prepared some example data in `training/example_audios`.
 
-To partition the audio files:
+1. Run `training/partition_clips` to partition each audio file into clips (by finding start and end points; we do not save the partitioned audio onto the disk to save disk space)
+2. Run `training/extract_audio_training_latents.py` to extract each clip's audio and text features and save them as a `TensorDict` with a `.tsv` file containing metadata to `output_dir`.
+
+### Partitioning the audio files
+
+Run
 
 ```bash
 python training/partition_clips.py
@@ -62,31 +77,44 @@ python training/partition_clips.py
 
 Arguments:
 
-- `data_path` -- path to the audio files (`.flac` or `.wav`)
-- `output_path` -- path to the output `.csv` file
+- `data_dir` -- path to a directory containing the audio files (`.flac` or `.wav`)
+- `output_dir` -- path to the output `.csv` file
 - `start` -- optional; useful when you need to run multiple processes to speed up processing -- this defines the beginning of the chunk to be processed
 - `end` -- optional; useful when you need to run multiple processes to speed up processing -- this defines the end of the chunk to be processed
 
-Then, run the `extract_audio_training_latents.py` with `torchrun`:
+### Extracting audio and text features
+
+Run
 
 ```bash
 torchrun --standalone training/extract_audio_training_latents.py
 ```
 
 You can run this with multiple GPUs (with `--nproc_per_node=<n>`) to speed up extraction.
-Check the top of the script to switch between 16kHz/44.1kHz extraction.
+Modify the definitions near the top of the script to switch between 16kHz/44.1kHz extraction.
 
 Arguments:
 
-- `data_dir` -- path to the audio files (`.flac` or `.wav`), same as the previous step
-- `captions_tsv` -- path to the captions file, a csv file at least with columns `id` and `caption`
+- `data_dir` -- path to a directory containing the audio files (`.flac` or `.wav`), same as the previous step
+- `captions_tsv` -- path to the captions file, a tab-separated values (tsv) file at least with columns `id` and `caption`
 - `clips_tsv` -- path to the clips file, generated in the last step
 - `latent_dir` -- where intermediate latent outputs are saved. It is safe to delete this directory afterwards.
 - `output_dir` -- where TensorDict and the metadata file are saved.
 
-The reference tsv files (with overlaps removed as mentioned in the paper) can be found [here](https://github.com/hkchengrex/MMAudio/releases/tag/v0.1). Note that `audioset_sl.tsv`, `bbcsound.tsv`, and `freesound.tsv` are subsets that are parts of WavCaps. These subsets might be smaller than the original datasets.
+**Reference tsv files (with overlaps removed as mentioned in the paper) can be found [here](https://github.com/hkchengrex/MMAudio/releases/tag/v0.1).**
+Note that these reference tsv files are the **outputs** of `extract_audio_training_latents.py`, which means the `id` column might contain duplicate entries (one per clip). You can still use it as the `captions_tsv` input though -- the script will handle duplicates gracefully.
+Among these reference tsv files, `audioset_sl.tsv`, `bbcsound.tsv`, and `freesound.tsv` are subsets that are parts of WavCaps. These subsets might be smaller than the original datasets.
 
-## Training
+Outputs produced in `output_dir`:
+
+1. A directory named `vgg-{split}` (i.e., in the TensorDict format), containing
+    a. `mean.memmap` mean values predicted by the VAE encoder (number of audios X sequence length X channel size)
+    b. `std.memmap` standard deviation values predicted by the VAE encoder (number of audios X sequence length X channel size)
+    c. `text_features.memmap` text features extracted from CLIP (number of audios X 77 (sequence length) X 1024)
+    f. `meta.json` that contains the metadata for the above memory mappings
+2. A tab-separated values file named `{basename(output_dir)}.tsv` that contains two columns: `id` containing audio file names without extension, and `label` containing corresponding text labels (i.e., captions)
+
+## Training on Extracted Features
 
 We use Distributed Data Parallel (DDP) for training.
 First, specify the data path in `config/data/base.yaml`. If you used the default parameters in the scripts above to extract features for the example data, the `Example_video` and `Example_audio` items should already be correct.
@@ -105,9 +133,10 @@ For full training on the base model with two GPUs, use the following command:
 OMP_NUM_THREADS=4 torchrun --standalone --nproc_per_node=2 train.py exp_id=exp_1 model=small_16k
 ```
 
-Any outputs from training will be stored in `output/<exp_id>`. 
+Any outputs from training will be stored in `output/<exp_id>`.
 
 More configuration options can be found in `config/base_config.yaml` and `config/train_config.yaml`.
+For the medium and large models, specify `vgg_oversample_rate` to be `3` to reduce overfitting.
 
 ## Checkpoints
 

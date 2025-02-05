@@ -58,6 +58,9 @@ class WavTextClipsDataset(Dataset):
             record['name'] = record['name']
             id = record['id']
             name = record['name']
+            if name not in self.captions:
+                log.warning(f'Audio {name} not found in {captions_tsv}')
+                continue
             record['caption'] = self.captions[name]
             self.clips.append(record)
 
