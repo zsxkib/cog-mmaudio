@@ -63,7 +63,7 @@ python training/partition_clips.py
 Arguments:
 
 - `data_path` -- path to the audio files (`.flac` or `.wav`)
-- `output_dir` -- path to the output `.csv` file
+- `output_path` -- path to the output `.csv` file
 - `start` -- optional; useful when you need to run multiple processes to speed up processing -- this defines the beginning of the chunk to be processed
 - `end` -- optional; useful when you need to run multiple processes to speed up processing -- this defines the end of the chunk to be processed
 
