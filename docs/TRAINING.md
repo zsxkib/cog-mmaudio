@@ -51,10 +51,10 @@ Arguments:
 ## Preparing Audio-Text Features
 
 We have prepared some example data in `training/example_audios`. 
-We first need to run `training/partition_clips` to partition each audio file into clips. 
-Then, we run the `training/extract_audio_training_latents.py` script, which will extract the audio and text features and save them as a `TensorDict` with a `.tsv` file containing metadata on the disk.
+First, run `training/partition_clips` to partition each audio file into clips. 
+Then, run the `training/extract_audio_training_latents.py` which extracts each clip's audio and text features and saves them as a `TensorDict` with a `.tsv` file containing metadata on the disk.
 
-To run this script:
+To partition the audio files:
 
 ```bash
 python training/partition_clips.py
