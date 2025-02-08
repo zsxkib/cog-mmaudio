@@ -39,7 +39,7 @@ ema:
   sigma_rels: [0.05, 0.1]
   update_every: 1
   checkpoint_every: 5_000
-  checkpoint_folder: ./output/${exp_id}/ema_ckpts
+  checkpoint_folder: ${hydra:run.dir}/ema_ckpts
   default_output_sigma: 0.05
 
 
