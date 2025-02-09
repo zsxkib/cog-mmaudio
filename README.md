@@ -178,4 +178,4 @@ Many thanks to:
 - [Make-An-Audio 2](https://github.com/bytedance/Make-An-Audio-2) for the 16kHz BigVGAN pretrained model and the VAE architecture
 - [BigVGAN](https://github.com/NVIDIA/BigVGAN)
 - [Synchformer](https://github.com/v-iashin/Synchformer) 
-- [EDM2](https://github.com/NVlabs/edm2) for the magnitude-preserving network architecture
+- [EDM2](https://github.com/NVlabs/edm2) for the magnitude-preserving VAE network architecture
