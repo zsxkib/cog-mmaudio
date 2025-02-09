@@ -168,6 +168,10 @@ MMAudio was trained on several datasets, including [AudioSet](https://research.g
 
 - [av-benchmark](https://github.com/hkchengrex/av-benchmark) for benchmarking results.
 
+## Disclaimer
+
+We have no affiliation with and have no knowledge of the party behind the domain "mmaudio.net".
+
 ## Acknowledgement
 
 Many thanks to:
