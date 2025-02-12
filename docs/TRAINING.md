@@ -108,7 +108,7 @@ The Clotho data contains both the development set and the validation set.
 
 Outputs produced in `output_dir`:
 
-1. A directory named `vgg-{split}` (i.e., in the TensorDict format), containing
+1. A directory named `{basename(output_dir)}` (i.e., in the TensorDict format), containing
     a. `mean.memmap` mean values predicted by the VAE encoder (number of audios X sequence length X channel size)
     b. `std.memmap` standard deviation values predicted by the VAE encoder (number of audios X sequence length X channel size)
     c. `text_features.memmap` text features extracted from CLIP (number of audios X 77 (sequence length) X 1024)
