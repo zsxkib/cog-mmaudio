@@ -17,6 +17,15 @@ Namely, before starting any training, we
 
 The current training script does not support `_v2` training.
 
+## Recommended Hardware Configuration
+
+These are what I recommend for a smooth and efficient training experience. These are not minimum requirements.
+
+- Single-node machine. We did not implement multi-node training
+- GPUs: for the small model, two 80G-H100s or above; for the large model, eight 80G-H100s or above
+- System memory: for 16kHz training, 600GB+; for 44kHz training, 700GB+
+- Storage: >2TB of fast NVMe storage. If you have enough system memory, OS caching will help and the storage does not need to be as fast.
+
 ## Prerequisites
 
 1. Install [av-benchmark](https://github.com/hkchengrex/av-benchmark). We use this library to automatically evaluate on the validation set during training, and on the test set after training.
