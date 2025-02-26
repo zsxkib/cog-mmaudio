@@ -14,6 +14,7 @@ ema:
 
 mini_train: False
 example_train: False
+enable_grad_scaler: True
 vgg_oversample_rate: 5
 
 log_text_interval: 200

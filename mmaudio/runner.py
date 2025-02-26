@@ -39,6 +39,7 @@ class Runner:
                  latent_std: Optional[torch.Tensor] = None):
         self.exp_id = cfg.exp_id
         self.use_amp = cfg.amp
+        self.enable_grad_scaler = cfg.enable_grad_scaler
         self.for_training = for_training
         self.cfg = cfg
 
@@ -151,7 +152,7 @@ class Runner:
                                          betas=[0.9, 0.95],
                                          eps=1e-6 if self.use_amp else 1e-8,
                                          fused=True)
-            if self.use_amp:
+            if self.enable_grad_scaler:
                 self.scaler = torch.amp.GradScaler(init_scale=2048)
             self.clip_grad_norm = cfg['clip_grad_norm']
 
@@ -313,7 +314,7 @@ class Runner:
 
         # Backward pass
         self.optimizer.zero_grad(set_to_none=True)
-        if self.use_amp:
+        if self.enable_grad_scaler:
             self.scaler.scale(mean_loss).backward()
             self.scaler.unscale_(self.optimizer)
             grad_norm = torch.nn.utils.clip_grad_norm_(self.network.parameters(),
