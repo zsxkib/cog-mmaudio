@@ -11,6 +11,8 @@
 
 University of Illinois Urbana-Champaign, Sony AI, and Sony Group Corporation
 
+CVPR 2025
+
 ## Highlight
 
 MMAudio generates synchronized audio given video and/or text inputs.
