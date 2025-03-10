@@ -37,9 +37,19 @@ These are what I recommend for a smooth and efficient training experience. These
 conda install -c conda-forge 'ffmpeg<7'
 ```
 
-4. Download the training datasets. We used [VGGSound](https://arxiv.org/abs/2004.14368), [AudioCaps](https://audiocaps.github.io/), and [WavCaps](https://arxiv.org/abs/2303.17395). Note that the audio files in the huggingface release of WavCaps have been downsampled to 32kHz. To the best of our ability, we located the original (high-sampling rate) audio files and used them instead to prevent artifacts during 44.1kHz training. We did not use the "SoundBible" portion of WavCaps, since it is a small set with many short audio unsuitable for our training.
+4. Download the training datasets. We used [VGGSound](https://arxiv.org/abs/2004.14368), [AudioCaps](https://audiocaps.github.io/), [WavCaps](https://arxiv.org/abs/2303.17395), and [Clotho](https://arxiv.org/abs/1910.09387) (paper to be updated). Note that the audio files in the huggingface release of WavCaps have been downsampled to 32kHz. To the best of our ability, we located the original (high-sampling rate) audio files and used them instead to prevent artifacts during 44.1kHz training. We did not use the "SoundBible" portion of WavCaps, since it is a small set with many short audio unsuitable for our training.
 
 5. Download the corresponding VAE (`v1-16.pth` for 16kHz training, and `v1-44.pth` for 44.1kHz training), vocoder models (`best_netG.pt` for 16kHz training; the vocoder for 44.1kHz training will be downloaded automatically), the [empty string encoding](https://github.com/hkchengrex/MMAudio/releases/download/v0.1/empty_string.pth), and Synchformer weights from [MODELS.md](https://github.com/hkchengrex/MMAudio/blob/main/docs/MODELS.md) place them in `ext_weights/`.
+
+### Helpful links for downloading the datasets
+
+We cannot redistribute the datasets for copyright reasons, but we do find some links helpful and they might be helpful to you as well.
+
+- https://huggingface.co/datasets/Meranti/CLAP_freesound
+- https://huggingface.co/datasets/agkphysics/AudioSet
+- https://sound-effects.bbcrewind.co.uk/
+
+For certain sources of VGGSound, you might notice desychronization between the audio and the video. This happens the video keyframes do not always align with the start of the audio and what happens during playbacks is player-dependent. We used PyTorch's decoder which can correctly handle these cases.
 
 ## Preparing Audio-Video-Text Features
 
@@ -113,11 +123,6 @@ Arguments:
 - `latent_dir` -- where intermediate latent outputs are saved. It is safe to delete this directory afterwards.
 - `output_dir` -- where TensorDict and the metadata file are saved.
 
-**Reference tsv files (with overlaps removed as mentioned in the paper) can be found [here](https://github.com/hkchengrex/MMAudio/releases/tag/v0.1).**
-Note that these reference tsv files are the **outputs** of `extract_audio_training_latents.py`, which means the `id` column might contain duplicate entries (one per clip). You can still use it as the `captions_tsv` input though -- the script will handle duplicates gracefully.
-Among these reference tsv files, `audioset_sl.tsv`, `bbcsound.tsv`, and `freesound.tsv` are subsets that are parts of WavCaps. These subsets might be smaller than the original datasets.
-The Clotho data contains both the development set and the validation set.
-
 Outputs produced in `output_dir`:
 
 1. A directory named `{basename(output_dir)}` (i.e., in the TensorDict format), containing
@@ -126,6 +131,25 @@ Outputs produced in `output_dir`:
     c. `text_features.memmap` text features extracted from CLIP (number of audios X 77 (sequence length) X 1024)
     f. `meta.json` that contains the metadata for the above memory mappings
 2. A tab-separated values file named `{basename(output_dir)}.tsv` that contains two columns: `id` containing audio file names without extension, and `label` containing corresponding text labels (i.e., captions)
+
+### Reference tsv files (with overlaps removed as mentioned in the paper)
+
+The reference tsv files can be found [here](https://github.com/hkchengrex/MMAudio/releases/tag/v0.1).
+
+Note that these reference tsv files are the **outputs** of `extract_audio_training_latents.py`, which means the `id` column might contain duplicate entries (one per clip). You can still use it as the `captions_tsv` input though -- the script will handle duplicates gracefully.
+Among these reference tsv files, `audioset_sl.tsv`, `bbcsound.tsv`, and `freesound.tsv` are subsets that are parts of WavCaps. These subsets might be smaller than the original datasets.
+The Clotho data contains both the development set and the validation set.
+
+**Update (Mar 9, 2025)**:
+We have updated a corrected set of reference tsv files. The previous tsv files contained some (<1%) corrupted captions (ie, mismatch between audio and caption, see https://github.com/hkchengrex/MMAudio/issues/56). The tsv files for VGGSound are unaffected. This reason for this error is unknown, but I cannot reproduce this error in the latest version of the code. Our pre-trained models are trained with **uncorrected** tsv files. For future training, I recommend using the corrected tsv files.
+
+The error statistics are as follows:
+
+- AudioCaps (170/43824), 0.39%
+- Freesound: (1670/180636), 0.92%
+- AudioSet: (290/100776), 0.29%
+- BBCSound: (3/29975), 0.01%
+- Clotho: (8/24332), 0.03%
 
 ## Training on Extracted Features
 
