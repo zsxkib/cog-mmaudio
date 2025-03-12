@@ -79,6 +79,8 @@ def main():
     batch_size = args.batch_size
     num_workers = args.num_workers
 
+    # cuda setup
+    torch.cuda.set_device(local_rank)
     clip_model = create_model_from_pretrained('hf-hub:apple/DFN5B-CLIP-ViT-H-14-384',
                                               return_transform=False).eval().cuda()
 
