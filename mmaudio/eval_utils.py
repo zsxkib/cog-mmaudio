@@ -235,7 +235,10 @@ def load_image(image_path: Path) -> VideoInfo:
         v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ])
 
-    frame = np.array(Image.open(image_path))
+    # frame = np.array(Image.open(image_path))
+    # Convert image to RGB to remove potential alpha channel
+    img = Image.open(image_path).convert('RGB')
+    frame = np.array(img)
 
     clip_chunk = torch.from_numpy(frame).unsqueeze(0).permute(0, 3, 1, 2)
     sync_chunk = torch.from_numpy(frame).unsqueeze(0).permute(0, 3, 1, 2)
